@@ -1,0 +1,109 @@
+/*
+ * Sprinkle & Sparkle design tokens (Tailwind CSS v4 `@theme`).
+ *
+ * Palette is taken from the logo: "Sparkle" pink, "Sprinkle" aqua, soft
+ * pastels, white, warm cream and the near-black of the tagline.
+ * Components reference token names only (`bg-primary`, `rounded-card`,
+ * `py-section`, …) — change a value here and the whole site follows.
+ *
+ * Contrast notes (WCAG AA):
+ * - `primary` / `accent` carry white text at ≥ 4.9:1.
+ * - Use `primary-strong` for small pink text (≥ 5.5:1 on white and blush).
+ * - `aqua` is decorative only (not for text).
+ *
+ * Breakpoints: Tailwind defaults (sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem).
+ */
+@theme {
+  /* Neutrals */
+  --color-background: #ffffff;
+  --color-foreground: #2b2a2e;
+  --color-surface: #ffffff;
+  --color-muted: #faf6f7;
+  --color-muted-foreground: #66606b;
+  --color-border: #f0e4e9;
+
+  /* Brand pink — CTAs and accents */
+  --color-primary: #d81b60;
+  --color-primary-hover: #c2185b;
+  --color-primary-strong: #b8155a;
+  --color-primary-foreground: #ffffff;
+
+  /* Brand aqua */
+  --color-accent: #1f7a93;
+  --color-accent-hover: #196578;
+  --color-accent-foreground: #ffffff;
+  --color-aqua: #4aa3bc;
+
+  /* Pastel surfaces */
+  --color-blush: #fdebf1;
+  --color-blush-strong: #f9d5e2;
+  --color-aqua-mist: #e6f4f7;
+  --color-cream: #fff8f1;
+
+  --color-whatsapp: #1a9e50;
+  --color-ring: #1f7a93;
+
+  /* Layout widths → `max-w-narrow`, `max-w-site`, `max-w-wide` */
+  --container-narrow: 48rem;
+  --container-site: 76rem;
+  --container-wide: 90rem;
+
+  /* Fluid spacing → `px-gutter`, `py-section-sm`, `py-section`, `py-section-lg` */
+  --spacing-gutter: clamp(1rem, 4vw, 2rem);
+  --spacing-section-sm: clamp(3rem, 6vw, 4.5rem);
+  --spacing-section: clamp(4rem, 8vw, 6.5rem);
+  --spacing-section-lg: clamp(5rem, 11vw, 8rem);
+
+  /* Radius → `rounded-button`, `rounded-card`, `rounded-panel` */
+  --radius-button: 9999px;
+  --radius-card: 1.25rem;
+  --radius-panel: 2rem;
+
+  /* Elevation — soft, slightly warm */
+  --shadow-card: 0 1px 2px rgb(43 42 46 / 0.04), 0 6px 18px -8px rgb(43 42 46 / 0.1);
+  --shadow-card-hover: 0 2px 4px rgb(43 42 46 / 0.04), 0 20px 40px -16px rgb(216 27 96 / 0.22);
+  --shadow-header: 0 8px 24px -14px rgb(43 42 46 / 0.22);
+
+  /* Motion — keep in sync with src/components/animations/presets.ts */
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-rise: rise 0.8s var(--ease-premium) both;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-settle: settle 1.8s var(--ease-premium) both;
+
+  @keyframes settle {
+    from {
+      transform: scale(1.06);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -10px;
+    }
+  }
+}
+
+/* Fonts are loaded with next/font in src/app/layout.tsx */
+@theme inline {
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-dancing), cursive;
+}
