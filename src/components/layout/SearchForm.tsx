@@ -21,12 +21,12 @@ export function SearchForm({ id, className }: SearchFormProps) {
         type="search"
         autoComplete="off"
         placeholder="Search for baking tins, sprinkles, boxes, toppers…"
-        className="h-11 w-full rounded-button border border-border bg-muted pr-14 pl-5 text-sm text-foreground transition-colors placeholder:text-muted-foreground hover:border-blush-strong focus:bg-white"
+        className="h-11 w-full rounded-button border border-border bg-cream pr-16 pl-5 text-sm text-foreground transition-[border-color,background-color,box-shadow] duration-200 placeholder:text-muted-foreground hover:border-blush-strong focus:border-pink focus:bg-white focus:shadow-[0_0_0_4px_rgb(247_37_133/0.18)] focus-visible:outline-none"
       />
       <button
         type="submit"
         aria-label="Search"
-        className="absolute top-1 right-1 grid size-9 place-items-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary-hover"
+        className="absolute top-1 right-1 grid h-9 w-12 place-items-center rounded-full bg-linear-to-r from-primary to-primary-hover text-primary-foreground shadow-pink transition-[filter,scale] duration-200 ease-premium hover:brightness-95 active:scale-95"
       >
         <Search aria-hidden className="size-4" />
       </button>

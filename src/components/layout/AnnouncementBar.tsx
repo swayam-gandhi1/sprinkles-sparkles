@@ -11,32 +11,39 @@ const messages = [
   { text: "100% Secure Payments", icon: ShieldCheck, className: "hidden xl:flex" },
 ] as const;
 
+const contactClass =
+  "flex items-center gap-1.5 rounded-full px-2 py-1 transition-colors hover:bg-white/15 focus-visible:outline-white";
+
+/** Bright pink strip; white text on `primary` keeps ≥ 4.7:1 contrast. */
 export function AnnouncementBar() {
   const { phone, phoneHref, whatsappHref } = siteConfig.contact;
 
   return (
-    <aside aria-label="Store announcements" className="bg-blush-strong/70 text-foreground">
-      <Container className="flex h-9 items-center justify-center gap-6 text-xs font-medium sm:justify-between">
+    <aside
+      aria-label="Store announcements"
+      className="relative overflow-hidden bg-linear-to-r from-primary-hover via-primary to-primary-hover text-white"
+    >
+      <Container className="relative flex h-9 items-center justify-center gap-6 text-xs font-medium sm:justify-between">
         <ul className="flex items-center gap-6 lg:gap-8">
           {messages.map(({ text, icon: Icon, className }) => (
             <li key={text} className={cn("items-center gap-2", className)}>
-              <Icon aria-hidden className="size-3.5 text-primary-strong" />
+              <Icon aria-hidden className="size-3.5 text-sunny" />
               {text}
             </li>
           ))}
         </ul>
-        <div className="hidden items-center gap-5 sm:flex">
-          <a href={phoneHref} className="flex items-center gap-1.5 transition-colors hover:text-primary-strong">
-            <Phone aria-hidden className="size-3.5 text-primary-strong" />
+        <div className="hidden items-center gap-3 sm:flex">
+          <a href={phoneHref} className={contactClass}>
+            <Phone aria-hidden className="size-3.5 text-sunny" />
             {phone}
           </a>
           <a
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-1.5 transition-colors hover:text-primary-strong lg:flex"
+            className={cn(contactClass, "hidden lg:flex")}
           >
-            <WhatsAppIcon aria-hidden className="size-3.5 text-whatsapp" />
+            <WhatsAppIcon aria-hidden className="size-3.5" />
             Chat on WhatsApp
           </a>
         </div>

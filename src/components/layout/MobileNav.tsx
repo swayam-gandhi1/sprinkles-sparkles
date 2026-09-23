@@ -32,9 +32,9 @@ const rowClass =
 const iconButton = cn(buttonVariants({ variant: "ghost", size: "icon" }), "[&_svg]:size-6");
 
 const accountLinks = [
-  { label: "Login", href: routes.account, icon: User },
-  { label: "Wishlist", href: routes.wishlist, icon: Heart },
-  { label: "Cart", href: routes.cart, icon: ShoppingBag },
+  { label: "Login", href: routes.account, icon: User, color: "text-accent-strong" },
+  { label: "Wishlist", href: routes.wishlist, icon: Heart, color: "text-primary-strong" },
+  { label: "Cart", href: routes.cart, icon: ShoppingBag, color: "text-lavender-strong" },
 ] as const;
 
 /** Slide-in navigation drawer for screens below `lg`. */
@@ -118,6 +118,7 @@ export function MobileNav({ logo }: { logo: ReactNode }) {
             transition={{ type: "spring", bounce: 0, visualDuration: 0.35 }}
             className="fixed inset-y-0 left-0 z-50 flex w-[min(22rem,88vw)] flex-col bg-white shadow-card-hover lg:hidden"
           >
+            <div aria-hidden className="h-1.5 shrink-0 bg-linear-to-r from-pink via-sunny to-turquoise" />
             <div className="flex items-center justify-between border-b border-border px-5 py-3">
               <div onClick={close}>{logo}</div>
               <button ref={closeRef} type="button" aria-label="Close menu" onClick={close} className={cn(iconButton, "-mr-2")}>
@@ -191,14 +192,14 @@ export function MobileNav({ logo }: { logo: ReactNode }) {
 
             <div className="space-y-4 border-t border-border bg-cream/70 px-5 py-5">
               <ul className="grid grid-cols-3 gap-2">
-                {accountLinks.map(({ label, href, icon: Icon }) => (
+                {accountLinks.map(({ label, href, icon: Icon, color }) => (
                   <li key={label}>
                     <Link
                       href={href}
                       onClick={close}
                       className="flex flex-col items-center gap-1.5 rounded-xl bg-white py-3 text-xs font-medium shadow-card transition-colors hover:text-primary-strong"
                     >
-                      <Icon aria-hidden className="size-5" strokeWidth={1.6} />
+                      <Icon aria-hidden className={cn("size-5", color)} strokeWidth={1.7} />
                       {label}
                     </Link>
                   </li>

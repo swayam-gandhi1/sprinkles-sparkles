@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "Sprinkle & Sparkle",
   tagline: "The Cake Decor Shop",
   description:
-    "Cake decorating supplies, baking essentials, packaging, toppers and gifting products from Sprinkle & Sparkle, Khanna, Punjab.",
+    "Baking ingredients, cake decorating supplies, colours, essences, sprinkles, toppers, chocolates, boxes and packaging for home bakers, professional bakers, bakeries and cake artists. Sprinkle & Sparkle, Khanna, Punjab.",
   url: publicEnv.siteUrl,
   locale: "en-IN",
   currency: "INR",

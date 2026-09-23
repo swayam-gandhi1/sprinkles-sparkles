@@ -1,28 +1,60 @@
 import {
   BadgeCheck,
+  BookHeart,
   Boxes,
   BriefcaseBusiness,
+  Cake,
+  CakeSlice,
+  Candy,
+  Croissant,
   ChefHat,
+  Flame,
   Gift,
   HandHeart,
+  HeartHandshake,
   Headset,
   MessageCircle,
   Package,
   Paintbrush,
+  Palette,
   PartyPopper,
   Search,
   ShieldCheck,
   Sparkles,
+  Star,
   Store,
   Truck,
+  UtensilsCrossed,
   WandSparkles,
+  Wheat,
 } from "lucide-react";
 import { routes } from "@/lib/config/routes";
-import type { Feature, Occasion, ShoppingNeed } from "@/types/content";
+import type { Feature, Occasion, ProductGroup, ShoppingNeed } from "@/types/content";
 
 /* Homepage copy. Imagery lives in ./images.ts. */
 
-export const heroAudiences = ["Home Bakers", "Cake Artists", "Gift Makers", "Celebration Lovers"] as const;
+export const heroAudiences = ["Home Bakers", "Professional Bakers", "Bakeries", "Cake Artists"] as const;
+
+/** Short brand lines shown in the strip under the hero CTAs. */
+export const heroHighlights = [
+  { text: "Less Searching. More Creating.", icon: Flame },
+  { text: "Your Baking Needs. Our Collection.", icon: Sparkles },
+] as const;
+
+export const essentialsIntro =
+  "From essential baking ingredients to colourful decorations, premium sprinkles, cake toppers, chocolates and packaging supplies — explore a collection designed for every baking idea and celebration.";
+
+// Existing category pages where one exists; otherwise a shop collection filter.
+export const bakingEssentials: readonly ProductGroup[] = [
+  { name: "Baking Ingredients", href: routes.collection("baking-ingredients"), icon: Wheat, tone: "sunny" },
+  { name: "Cake Decoration", href: routes.collection("decorate"), icon: CakeSlice, tone: "blush" },
+  { name: "Colours & Essences", href: routes.collection("colours-essences"), icon: Palette, tone: "lavender" },
+  { name: "Sprinkles", href: routes.category("sprinkles"), icon: Sparkles, tone: "aqua" },
+  { name: "Toppers", href: routes.collection("toppers"), icon: Star, tone: "lavender" },
+  { name: "Chocolates", href: routes.collection("chocolates"), icon: Candy, tone: "cream" },
+  { name: "Boxes & Packaging", href: routes.collection("packaging"), icon: Package, tone: "blush" },
+  { name: "Tools & Equipment", href: routes.category("tools-equipment"), icon: UtensilsCrossed, tone: "aqua" },
+];
 
 export const trustItems: readonly Feature[] = [
   { title: "Wide Range of Products", description: "Everything you need in one place.", icon: Boxes },
@@ -41,26 +73,28 @@ export const aboutParagraphs = [
 export const audiences: readonly Feature[] = [
   {
     title: "Home Bakers",
-    description: "For passionate home bakers who love creating beautiful cakes and treats.",
+    description: "Bring your creative baking ideas to life from your own kitchen.",
     icon: ChefHat,
   },
   {
+    title: "Professional Bakers",
+    description: "Find the supplies you need to create beautiful and consistent results.",
+    icon: Croissant,
+  },
+  {
+    title: "Bakeries",
+    description: "Explore essential products for everyday baking, decoration and packaging needs.",
+    icon: Store,
+  },
+  {
     title: "Cake Artists",
-    description: "For professionals who need decorating tools, toppers and finishing details.",
+    description: "Discover colourful details, toppers, tools and accessories for your creations.",
     icon: Paintbrush,
   },
-  {
-    title: "Gift Makers",
-    description: "For people who love creating thoughtful hampers and beautifully presented gifts.",
-    icon: Gift,
-  },
-  {
-    title: "Businesses",
-    description:
-      "For bakeries, gifting businesses, event planners and other businesses looking for supplies and packaging.",
-    icon: BriefcaseBusiness,
-  },
 ];
+
+export const sparkleBanner =
+  "Your baking needs, our collection. Discover the products that help you create something beautiful, delicious and memorable.";
 
 export const shoppingNeeds: readonly ShoppingNeed[] = [
   {
@@ -85,7 +119,7 @@ export const shoppingNeeds: readonly ShoppingNeed[] = [
     cta: "Explore Gifting",
     href: routes.collection("gifting"),
     icon: Gift,
-    tone: "cream",
+    tone: "sunny",
   },
   {
     title: "Celebrate",
@@ -93,19 +127,19 @@ export const shoppingNeeds: readonly ShoppingNeed[] = [
     cta: "Explore Celebrations",
     href: routes.collection("celebrations"),
     icon: PartyPopper,
-    tone: "blush",
+    tone: "lavender",
   },
 ];
 
 export const hamperOccasions = ["Birthdays", "Festivals", "Corporate Gifts", "Return Gifts", "Special Occasions"] as const;
 
 export const occasions: readonly Occasion[] = [
-  { name: "Birthdays", description: "Make every birthday extra special.", href: routes.occasion("birthdays") },
-  { name: "Festivals", description: "Celebrate the season with beautiful details.", href: routes.occasion("festivals") },
-  { name: "Rakhi", description: "Thoughtful gifting for the bond you cherish.", href: routes.occasion("rakhi") },
-  { name: "Teacher's Day", description: "Say thank you with something meaningful.", href: routes.occasion("teachers-day") },
-  { name: "Corporate Gifting", description: "Elegant gifting solutions for teams and clients.", href: routes.occasion("corporate-gifting") },
-  { name: "Special Occasions", description: "Because every special moment deserves a little sparkle.", href: routes.occasion("special-occasions") },
+  { name: "Birthdays", description: "Make every birthday extra special.", href: routes.occasion("birthdays"), icon: Cake, tone: "blush" },
+  { name: "Festivals", description: "Celebrate the season with beautiful details.", href: routes.occasion("festivals"), icon: Flame, tone: "sunny" },
+  { name: "Rakhi", description: "Thoughtful gifting for the bond you cherish.", href: routes.occasion("rakhi"), icon: HeartHandshake, tone: "cream" },
+  { name: "Teacher's Day", description: "Say thank you with something meaningful.", href: routes.occasion("teachers-day"), icon: BookHeart, tone: "aqua" },
+  { name: "Corporate Gifting", description: "Elegant gifting solutions for teams and clients.", href: routes.occasion("corporate-gifting"), icon: BriefcaseBusiness, tone: "lavender" },
+  { name: "Special Occasions", description: "Because every special moment deserves a little sparkle.", href: routes.occasion("special-occasions"), icon: PartyPopper, tone: "blush" },
 ];
 
 export const whyIntro =

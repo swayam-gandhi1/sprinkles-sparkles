@@ -3,6 +3,7 @@ import type { NavItem, NavLink } from "@/types/content";
 
 export const mainNav: readonly NavItem[] = [
   { label: "Home", href: routes.home },
+  { label: "About Us", href: routes.about },
   { label: "Shop", href: routes.shop },
   { label: "Baking Tins", href: routes.category("baking-tins") },
   { label: "Boxes", href: routes.category("boxes") },
@@ -21,14 +22,12 @@ export const mainNav: readonly NavItem[] = [
       { label: "Diwali Exclusive Range", href: routes.category("diwali-exclusive-range") },
     ],
   },
-  { label: "Workshops", href: routes.category("workshops") },
 ];
 
 export const footerQuickLinks: readonly NavLink[] = [
   { label: "Home", href: routes.home },
-  { label: "Shop", href: routes.shop },
   { label: "About Us", href: routes.about },
-  { label: "Workshops", href: routes.category("workshops") },
+  { label: "Shop", href: routes.shop },
   { label: "Contact Us", href: routes.contact },
 ];
 

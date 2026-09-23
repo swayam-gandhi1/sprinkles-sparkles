@@ -8,8 +8,8 @@ export type ImageAsset = {
   position?: string;
 };
 
-/** Pastel surface used behind icons, panels and placeholders. */
-export type Tone = "blush" | "aqua" | "cream";
+/** Colour family for icons, panels and placeholders (see src/components/common/tones.ts). */
+export type Tone = "blush" | "aqua" | "cream" | "lavender" | "sunny";
 
 export type NavLink = {
   label: string;
@@ -34,6 +34,14 @@ export type Category = {
   icon: LucideIcon;
 };
 
+/** A top-level product group card (links to a category or shop filter). */
+export type ProductGroup = {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+  tone: Tone;
+};
+
 export type ShoppingNeed = {
   title: string;
   description: string;
@@ -47,4 +55,6 @@ export type Occasion = {
   name: string;
   description: string;
   href: string;
+  icon: LucideIcon;
+  tone: Tone;
 };

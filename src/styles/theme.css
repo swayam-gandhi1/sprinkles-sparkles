@@ -1,47 +1,71 @@
 /*
  * Sprinkle & Sparkle design tokens (Tailwind CSS v4 `@theme`).
  *
- * Palette is taken from the logo: "Sparkle" pink, "Sprinkle" aqua, soft
- * pastels, white, warm cream and the near-black of the tagline.
+ * Bright & colourful palette: vivid brand pink, coral, turquoise, sunny
+ * yellow and soft lavender over warm cream and white, with dark navy text.
  * Components reference token names only (`bg-primary`, `rounded-card`,
  * `py-section`, …) — change a value here and the whole site follows.
  *
+ * Usage:
+ * - Pink → primary CTAs, active states, key highlights.
+ * - Turquoise → trust elements, secondary buttons, selected sections.
+ * - Yellow → festive accents and small decorative details only.
+ * - Lavender / aqua / cream → alternating section backgrounds.
+ *
  * Contrast notes (WCAG AA):
- * - `primary` / `accent` carry white text at ≥ 4.9:1.
- * - Use `primary-strong` for small pink text (≥ 5.5:1 on white and blush).
- * - `aqua` is decorative only (not for text).
+ * - `primary` / `accent` carry white text at ≥ 4.7:1.
+ * - `pink`, `coral`, `turquoise`, `sunny` are vivid fills/decor — use them for
+ *   large display type (≥ 24px) or backgrounds, never small text on white.
+ * - Small coloured text: `primary-strong` (≥ 5.9:1) or `accent-strong` (≥ 5.5:1).
+ * - `turquoise` and `sunny` carry `foreground` (navy) text at ≥ 7.6:1.
  *
  * Breakpoints: Tailwind defaults (sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem).
  */
 @theme {
-  /* Neutrals */
-  --color-background: #ffffff;
-  --color-foreground: #2b2a2e;
+  /* Neutrals — navy instead of black */
+  --color-background: #fffcf9;
+  --color-foreground: #17213b;
   --color-surface: #ffffff;
-  --color-muted: #faf6f7;
-  --color-muted-foreground: #66606b;
-  --color-border: #f0e4e9;
+  --color-muted: #fff5f0;
+  --color-muted-foreground: #4f5872;
+  --color-border: #f4e2ea;
+  --color-navy: #17213b;
 
-  /* Brand pink — CTAs and accents */
-  --color-primary: #d81b60;
-  --color-primary-hover: #c2185b;
-  --color-primary-strong: #b8155a;
+  /* Brand pink */
+  --color-pink: #f72585;
+  --color-primary: #de1273;
+  --color-primary-hover: #c70f66;
+  --color-primary-strong: #b00d5a;
   --color-primary-foreground: #ffffff;
+  --color-coral: #ff6b8a;
 
-  /* Brand aqua */
-  --color-accent: #1f7a93;
-  --color-accent-hover: #196578;
+  /* Turquoise */
+  --color-turquoise: #16c6d9;
+  --color-accent: #0a7c8a;
+  --color-accent-hover: #086b77;
+  --color-accent-strong: #086b77;
   --color-accent-foreground: #ffffff;
-  --color-aqua: #4aa3bc;
+  --color-aqua: #16c6d9;
+
+  /* Festive yellow */
+  --color-sunny: #ffd166;
+  --color-sunny-mist: #fff4d6;
+  --color-sunny-strong: #8a5300;
 
   /* Pastel surfaces */
-  --color-blush: #fdebf1;
-  --color-blush-strong: #f9d5e2;
-  --color-aqua-mist: #e6f4f7;
-  --color-cream: #fff8f1;
+  --color-blush: #ffe9f2;
+  --color-blush-strong: #ffcfe2;
+  --color-aqua-mist: #d8f8fa;
+  --color-lavender: #e3d5ff;
+  --color-lavender-mist: #f3edff;
+  --color-lavender-vivid: #b89cff;
+  --color-lavender-strong: #6b3fc4;
+  --color-cream: #fff9f4;
 
   --color-whatsapp: #1a9e50;
-  --color-ring: #1f7a93;
+  /* Carries white text (5:1) — for labelled WhatsApp buttons */
+  --color-whatsapp-strong: #15803f;
+  --color-ring: #0a7c8a;
 
   /* Layout widths → `max-w-narrow`, `max-w-site`, `max-w-wide` */
   --container-narrow: 48rem;
@@ -51,7 +75,7 @@
   /* Fluid spacing → `px-gutter`, `py-section-sm`, `py-section`, `py-section-lg` */
   --spacing-gutter: clamp(1rem, 4vw, 2rem);
   --spacing-section-sm: clamp(3rem, 6vw, 4.5rem);
-  --spacing-section: clamp(4rem, 8vw, 6.5rem);
+  --spacing-section: clamp(3.75rem, 7.5vw, 6rem);
   --spacing-section-lg: clamp(5rem, 11vw, 8rem);
 
   /* Radius → `rounded-button`, `rounded-card`, `rounded-panel` */
@@ -59,10 +83,12 @@
   --radius-card: 1.25rem;
   --radius-panel: 2rem;
 
-  /* Elevation — soft, slightly warm */
-  --shadow-card: 0 1px 2px rgb(43 42 46 / 0.04), 0 6px 18px -8px rgb(43 42 46 / 0.1);
-  --shadow-card-hover: 0 2px 4px rgb(43 42 46 / 0.04), 0 20px 40px -16px rgb(216 27 96 / 0.22);
-  --shadow-header: 0 8px 24px -14px rgb(43 42 46 / 0.22);
+  /* Elevation — soft, tinted with brand pink rather than grey */
+  --shadow-card: 0 1px 2px rgb(23 33 59 / 0.04), 0 8px 22px -10px rgb(23 33 59 / 0.12);
+  --shadow-card-hover: 0 2px 4px rgb(23 33 59 / 0.04), 0 22px 44px -18px rgb(247 37 133 / 0.32);
+  --shadow-header: 0 10px 28px -16px rgb(23 33 59 / 0.25);
+  --shadow-pink: 0 12px 26px -12px rgb(222 18 115 / 0.6);
+  --shadow-teal: 0 12px 26px -12px rgb(10 124 138 / 0.55);
 
   /* Motion — keep in sync with src/components/animations/presets.ts */
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
@@ -105,5 +131,6 @@
 @theme inline {
   --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
   --font-script: var(--font-dancing), cursive;
 }

@@ -5,18 +5,25 @@ import { FadeIn, FadeUp } from "@/components/animations/Reveal";
 import { StaggerContainer, StaggerItem } from "@/components/animations/Stagger";
 import { ImageSlot } from "@/components/common/ImageSlot";
 import { ScriptNote } from "@/components/common/ScriptNote";
-import { SectionHeading } from "@/components/common/SectionHeading";
+import { Highlight, SectionHeading } from "@/components/common/SectionHeading";
+import { tones } from "@/components/common/tones";
 import { Section } from "@/components/layout/Section";
 import { occasions } from "@/data/home";
 import { siteImages } from "@/data/images";
+import { cn } from "@/lib/utils/cn";
 
-/** Split layout: one real store photo beside an elegant, scannable list of occasions. */
+/** Aqua band: one real store photo beside colourful, scannable occasion cards. */
 export function OccasionSection() {
   return (
-    <Section aria-labelledby="occasions-title" className="bg-cream">
-      <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
+    <Section aria-labelledby="occasions-title" className="relative overflow-hidden bg-aqua-mist">
+      <div aria-hidden className="sprinkle-pattern pointer-events-none absolute inset-0 opacity-50" />
+      <div className="relative grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
         <div className="relative order-last lg:order-first lg:col-span-5">
-          <ImageReveal className="aspect-[4/3] rounded-panel shadow-card sm:aspect-[16/10] lg:aspect-[4/5]">
+          <div
+            aria-hidden
+            className="absolute inset-0 translate-x-3 translate-y-3 rotate-2 rounded-panel bg-linear-to-br from-sunny/60 to-coral/40 sm:translate-x-5 sm:translate-y-5"
+          />
+          <ImageReveal className="relative aspect-[4/3] rounded-panel shadow-card sm:aspect-[16/10] lg:aspect-[4/5]">
             <ImageSlot image={siteImages.occasions} sizes="(min-width: 1024px) 30rem, 92vw" className="size-full" />
           </ImageReveal>
           <FadeIn delay={0.3} className="absolute -bottom-6 left-4 sm:left-8">
@@ -30,34 +37,51 @@ export function OccasionSection() {
           <FadeUp>
             <SectionHeading
               id="occasions-title"
-              title="Made for Every Celebration"
+              accent="teal"
+              title={
+                <>
+                  Made for Every <Highlight>Celebration</Highlight>
+                </>
+              }
               description="Beautiful products and gifting solutions for the moments that matter most."
             />
           </FadeUp>
           <StaggerContainer className="mt-8" stagger={0.06}>
             <ul className="grid gap-3 sm:grid-cols-2">
-              {occasions.map((occasion) => (
-                <li key={occasion.name}>
-                  <StaggerItem className="h-full">
-                    <Link
-                      href={occasion.href}
-                      className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-border bg-white px-5 py-4 transition-[border-color,box-shadow,translate] duration-300 ease-premium hover:-translate-y-0.5 hover:border-blush-strong hover:shadow-card"
-                    >
-                      <span>
-                        <span className="block text-base font-semibold transition-colors group-hover:text-primary-strong">
-                          {occasion.name}
+              {occasions.map((occasion) => {
+                const Icon = occasion.icon;
+                return (
+                  <li key={occasion.name}>
+                    <StaggerItem className="h-full">
+                      <Link
+                        href={occasion.href}
+                        className="group flex h-full items-center gap-4 rounded-2xl border border-white bg-white px-4 py-4 shadow-card transition-[translate,box-shadow] duration-300 ease-premium hover:-translate-y-0.5 hover:shadow-card-hover sm:px-5"
+                      >
+                        <span
+                          className={cn(
+                            "grid size-12 shrink-0 place-items-center rounded-2xl transition-transform duration-300 ease-premium group-hover:-rotate-6",
+                            tones[occasion.tone].icon,
+                          )}
+                        >
+                          <Icon aria-hidden className="size-6" strokeWidth={1.7} />
                         </span>
-                        <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
-                          {occasion.description}
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-base font-semibold transition-colors group-hover:text-primary-strong">
+                            {occasion.name}
+                          </span>
+                          <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
+                            {occasion.description}
+                          </span>
                         </span>
-                      </span>
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-blush text-primary-strong transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
-                        <ArrowRight aria-hidden className="size-4" />
-                      </span>
-                    </Link>
-                  </StaggerItem>
-                </li>
-              ))}
+                        <ArrowRight
+                          aria-hidden
+                          className="size-4 shrink-0 text-primary-strong transition-transform duration-300 ease-premium group-hover:translate-x-1"
+                        />
+                      </Link>
+                    </StaggerItem>
+                  </li>
+                );
+              })}
             </ul>
           </StaggerContainer>
         </div>

@@ -2,7 +2,7 @@ import { FadeUp } from "@/components/animations/Reveal";
 import { StaggerContainer, StaggerItem } from "@/components/animations/Stagger";
 import { ImageSlot } from "@/components/common/ImageSlot";
 import { ScrollRow } from "@/components/common/ScrollRow";
-import { SectionHeading } from "@/components/common/SectionHeading";
+import { Highlight, SectionHeading } from "@/components/common/SectionHeading";
 import { InstagramIcon } from "@/components/common/SocialIcons";
 import { Section } from "@/components/layout/Section";
 import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
@@ -11,7 +11,7 @@ import { siteConfig } from "@/lib/config/site";
 import type { ImageAsset } from "@/types/content";
 
 function GalleryTile({ image, href }: { image: ImageAsset; href: string | null }) {
-  const className = "group relative block size-full overflow-hidden rounded-card";
+  const className = "group relative block size-full overflow-hidden rounded-card shadow-card ring-4 ring-white";
   const content = (
     <>
       <ImageSlot
@@ -24,7 +24,7 @@ function GalleryTile({ image, href }: { image: ImageAsset; href: string | null }
       {href ? (
         <span
           aria-hidden
-          className="absolute inset-0 grid place-items-center bg-primary/0 text-white opacity-0 transition duration-300 ease-premium group-hover:bg-primary/35 group-hover:opacity-100"
+          className="absolute inset-0 grid place-items-center bg-linear-to-br from-pink/55 via-coral/40 to-sunny/40 text-white opacity-0 transition duration-300 ease-premium group-hover:opacity-100"
         >
           <InstagramIcon className="size-8 drop-shadow" />
         </span>
@@ -51,7 +51,12 @@ export function InstagramSection() {
       <FadeUp>
         <SectionHeading
           id="instagram-title"
-          title="A Glimpse of Our World"
+          eyebrow="Follow along on Instagram"
+          title={
+            <>
+              A Glimpse of <Highlight>Our World</Highlight>
+            </>
+          }
           description="Take a look at what's happening at Sprinkle & Sparkle — from new arrivals and festive collections to gifting ideas and creative finds."
           action={
             instagram ? (
@@ -66,7 +71,7 @@ export function InstagramSection() {
       </FadeUp>
 
       <StaggerContainer className="mt-10 lg:mt-12" stagger={0.06}>
-        <ScrollRow className="md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0 md:pb-0 lg:gap-5">
+        <ScrollRow className="pt-1 md:mx-0 md:grid md:grid-cols-3 md:pt-0 md:gap-4 md:overflow-visible md:px-0 md:pb-0 lg:gap-5">
           {instagramGallery.map((image) => (
             <li key={image.alt} className="aspect-square w-[62%] shrink-0 snap-start sm:w-[40%] md:w-auto">
               <StaggerItem variant="scaleIn" className="h-full">

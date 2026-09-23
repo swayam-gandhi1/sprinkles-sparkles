@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Dancing_Script, Poppins } from "next/font/google";
+import { Dancing_Script, Playfair_Display, Poppins } from "next/font/google";
 import { MotionProvider } from "@/components/animations/MotionProvider";
 import { SkipLink } from "@/components/common/SkipLink";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
@@ -9,7 +9,8 @@ import { siteConfig } from "@/lib/config/site";
 import { cn } from "@/lib/utils/cn";
 import "./globals.css";
 
-// Poppins for UI and headings; Dancing Script echoes the logo's hand-lettering.
+// Poppins for UI and headings; Dancing Script echoes the logo's hand-lettering;
+// Playfair Display italic is a sparing editorial accent (hero lead-in only).
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -19,7 +20,16 @@ const poppins = Poppins({
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
+  weight: ["600", "700"],
   variable: "--font-dancing",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["italic"],
+  variable: "--font-playfair",
   display: "swap",
 });
 
@@ -39,7 +49,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-IN" className={cn(poppins.variable, dancingScript.variable)}>
+    <html lang="en-IN" className={cn(poppins.variable, dancingScript.variable, playfair.variable)}>
       <body className="flex min-h-dvh flex-col">
         <SkipLink />
         <MotionProvider>

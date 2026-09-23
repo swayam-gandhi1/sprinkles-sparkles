@@ -14,7 +14,9 @@ E-commerce storefront. Next.js (App Router) · TypeScript (strict) · Tailwind C
   it with text, an icon, or a generated image.
 - **Tokens**: all visual values live in `src/styles/theme.css`; components use token
   utilities (`bg-primary`, `rounded-card`, `py-section`, `ease-premium`), not raw values.
-  Adding a custom token? Register it in `src/lib/utils/cn.ts` too.
+  Adding a custom token? Register it in `src/lib/utils/cn.ts` too. Colour families
+  (pink/aqua/lavender/sunny/cream) for icon tiles, cards and panels come from
+  `src/components/common/tones.ts` — use `tones[tone]` / `toneAt(i)`, not ad-hoc pastels.
 - **Server Components by default.** Add `"use client"` only to small interactive leaves.
 - **No API logic in components.** Data flows `component → src/lib/api/<service>.ts →
   apiFetch`. Env vars are read only in `src/lib/config/`. Strapi, Razorpay and
@@ -52,9 +54,26 @@ src/styles/theme.css      design tokens
 - All homepage photos go through ONE manifest: `src/data/images.ts`. Policy (client's
   choice): REAL shop photos only — no stock or AI imagery. They come from the shop's
   Instagram (@sprinkle_and_sparkle__) as high-quality WebP in `public/images/client/`.
-  Sections without a real photo (need cards, Diwali feature, workshops, inspiration) are
+  Sections without a real photo (need cards, Diwali feature, inspiration) are
   designed to work without one; add photos there only when the client supplies them.
 - Don't invent claims (reviews, stats, awards, prices, delivery promises).
+
+## Shop, products & cart
+
+- `/shop` (filters/sort/pagination via URL params), `/products/[slug]`, `/cart`, `/wishlist`;
+  `/category/[slug]` redirects nav category links to the matching shop filter.
+- Data flows `page → src/lib/api/products.ts → src/data/products.ts`. The catalog is a
+  **SAMPLE**: product names reflect real ranges, but **prices, stock flags and dates are
+  developer samples** (client-approved as placeholders). Replace via `lib/api/products.ts`
+  when Strapi is connected. Pure filter/sort logic lives in `src/lib/products/query.ts`.
+- Shop taxonomy (categories, collections, occasions, price bands, sort) is in `src/data/shop.ts`.
+  Filters only show options present in the data; no ratings/brands/reviews exist, so none are shown.
+- **Image exception (client-approved):** product photos on shop/product pages may be
+  AI-generated placeholders in `public/images/products/placeholder/`, flagged with
+  `placeholder: true` in the data. Real photos always take priority; the homepage stays
+  real-photos-only.
+- Cart + wishlist are browser-only (`src/lib/cart/store.ts`, localStorage). No checkout yet;
+  the cart sends orders via a pre-filled WhatsApp message.
 
 ## Commands
 

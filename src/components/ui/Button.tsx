@@ -3,12 +3,20 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
+// Filled variants lift slightly on hover (pointer devices only) and press on tap.
+const lift = "hover:-translate-y-0.5 active:translate-y-0";
+
 const variantClasses = {
-  primary:
-    "bg-primary text-primary-foreground shadow-[0_10px_24px_-12px_rgb(216_27_96/0.65)] hover:bg-primary-hover",
-  accent: "bg-accent text-accent-foreground shadow-[0_10px_24px_-12px_rgb(31_122_147/0.6)] hover:bg-accent-hover",
-  outline: "border border-primary/35 bg-white text-primary-strong hover:border-primary hover:bg-blush",
-  ghost: "bg-transparent text-foreground hover:bg-muted",
+  /** Pink — the main call to action. */
+  primary: cn(
+    "bg-linear-to-r from-primary to-primary-hover text-primary-foreground shadow-pink hover:from-primary-hover hover:to-primary-hover",
+    lift,
+  ),
+  /** Turquoise — secondary actions and trust-led sections (shopping, support). */
+  accent: cn("bg-accent text-accent-foreground shadow-teal hover:bg-accent-hover", lift),
+  /** Light/outline — pairs with a filled button, or sits on photos and colour. */
+  outline: "border-2 border-primary/25 bg-white text-primary-strong hover:border-primary hover:bg-blush",
+  ghost: "bg-transparent text-foreground hover:bg-blush hover:text-primary-strong",
 } as const;
 
 // `md`, `lg` and `icon` meet the 44px minimum touch target.
@@ -42,7 +50,8 @@ export function ButtonArrow() {
 export function buttonVariants({ variant = "primary", size = "md", className }: ButtonStyleProps = {}) {
   return cn(
     "group/button inline-flex shrink-0 items-center justify-center gap-2 rounded-button font-semibold whitespace-nowrap select-none",
-    "transition-[color,background-color,border-color,box-shadow,scale] duration-200 ease-premium active:scale-[0.97]",
+    "transition-[color,background-color,border-color,box-shadow,scale,translate,--tw-gradient-from,--tw-gradient-to] duration-200 ease-premium active:scale-[0.97]",
+    "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring",
     "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
     "[&_svg]:size-[1.125em] [&_svg]:shrink-0",
     variantClasses[variant],

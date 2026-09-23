@@ -9,10 +9,10 @@ const twMerge = extendTailwindMerge({
       container: ["narrow", "site", "wide"],
       spacing: ["gutter", "section-sm", "section", "section-lg"],
       radius: ["button", "card", "panel"],
-      shadow: ["card", "card-hover", "header"],
+      shadow: ["card", "card-hover", "header", "pink", "teal"],
       ease: ["premium"],
       animate: ["rise", "float", "settle"],
-      font: ["sans", "display", "script"],
+      font: ["sans", "display", "serif", "script"],
     },
   },
 });

@@ -2,12 +2,7 @@ import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import type { ImageAsset, Tone } from "@/types/content";
-
-const toneClasses: Record<Tone, string> = {
-  blush: "bg-blush text-primary-strong",
-  aqua: "bg-aqua-mist text-accent",
-  cream: "bg-cream text-primary-strong",
-};
+import { tones } from "./tones";
 
 type ImageSlotProps = {
   image: ImageAsset;
@@ -61,8 +56,9 @@ export function ImageSlot({
           aria-label={decorative ? undefined : image.alt}
           aria-hidden={decorative || undefined}
           className={cn(
-            "sprinkle-pattern absolute inset-0 flex flex-col items-center justify-center gap-3 p-4",
-            toneClasses[tone],
+            "sprinkle-pattern absolute inset-0 flex flex-col items-center justify-center gap-3 bg-linear-to-br p-4",
+            tones[tone].gradient,
+            tones[tone].text,
             imageClassName,
           )}
         >

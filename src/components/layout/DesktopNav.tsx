@@ -13,8 +13,8 @@ import { isActivePath } from "@/lib/utils/nav";
 import type { NavLink } from "@/types/content";
 
 const linkClass =
-  "relative inline-flex h-10 items-center gap-1 px-2 text-[0.8125rem] font-medium text-foreground/80 transition-colors hover:text-primary-strong xl:px-3 xl:text-sm " +
-  "after:absolute after:inset-x-2 after:bottom-1 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-primary after:transition-transform after:duration-300 after:ease-premium hover:after:scale-x-100 xl:after:inset-x-3";
+  "relative inline-flex h-10 items-center gap-1 px-1.5 text-[0.8125rem] font-medium text-foreground/85 transition-colors hover:text-primary-strong xl:px-3 xl:text-sm " +
+  "after:absolute after:inset-x-1.5 after:bottom-1 after:h-[3px] after:origin-left after:scale-x-0 after:rounded-full after:bg-linear-to-r after:from-pink after:to-turquoise after:transition-transform after:duration-300 after:ease-premium hover:after:scale-x-100 xl:after:inset-x-3";
 const activeClass = "text-primary-strong after:scale-x-100";
 
 export function DesktopNav({ className }: { className?: string }) {
@@ -129,7 +129,7 @@ function MoreMenu({ label, items, pathname }: MoreMenuProps) {
             transition={{ duration: 0.2, ease: premiumEase }}
             className="absolute top-full left-1/2 z-50 w-60 -translate-x-1/2 pt-2"
           >
-            <ul className="rounded-card border border-border bg-white p-2 shadow-card-hover">
+            <ul className="rounded-card border border-border border-t-4 border-t-pink bg-white p-2 shadow-card-hover">
               {items.map((child) => (
                 <li key={child.href}>
                   <Link

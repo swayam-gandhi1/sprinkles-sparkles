@@ -10,7 +10,7 @@ export function HeaderShell({ children }: { children: ReactNode }) {
   return (
     <header
       data-scrolled={scrolled ? "true" : "false"}
-      className="group/header sticky top-0 z-40 border-b border-border bg-white transition-shadow duration-300 ease-premium data-[scrolled=true]:shadow-header"
+      className="group/header sticky top-0 z-40 border-b border-border/70 bg-white transition-shadow duration-300 ease-premium data-[scrolled=true]:border-transparent data-[scrolled=true]:shadow-header"
     >
       {children}
     </header>
