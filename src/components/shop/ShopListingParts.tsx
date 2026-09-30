@@ -2,13 +2,20 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, SearchX, X } from "lucide-react";
 import { DecorLayer, type DecorItem } from "@/components/common/Decor";
 import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
-import { priceBands, shopCategories, shopCollections, shopOccasions } from "@/data/shop";
+import { priceBands } from "@/data/shop";
 import { routes } from "@/lib/config/routes";
 import { hasActiveFilters, shopHref } from "@/lib/products/query";
 import { cn } from "@/lib/utils/cn";
 import type { ShopQuery } from "@/types/product";
 
 /* Server-rendered pieces of the product listing: chips, pagination, empty state, promo. */
+
+function formatSlugLabel(slug: string) {
+  return slug
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
 
 /** Removable chips for each active filter; each chip is a plain link. */
 export function ActiveFilters({ query }: { query: ShopQuery }) {
@@ -17,14 +24,17 @@ export function ActiveFilters({ query }: { query: ShopQuery }) {
   const chips: { label: string; href: string }[] = [
     ...(query.q ? [{ label: `“${query.q}”`, href: shopHref({ ...query, q: "", page: 1 }) }] : []),
     ...query.categories.map((slug) => ({
-      label: shopCategories.find((c) => c.slug === slug)?.name ?? slug,
+      label: formatSlugLabel(slug),
       href: shopHref({ ...query, categories: query.categories.filter((c) => c !== slug), page: 1 }),
     })),
+    ...(query.subcategory
+      ? [{ label: formatSlugLabel(query.subcategory), href: shopHref({ ...query, subcategory: null, page: 1 }) }]
+      : []),
     ...(query.collection
-      ? [{ label: shopCollections[query.collection] ?? query.collection, href: shopHref({ ...query, collection: null, page: 1 }) }]
+      ? [{ label: formatSlugLabel(query.collection), href: shopHref({ ...query, collection: null, page: 1 }) }]
       : []),
     ...(query.occasion
-      ? [{ label: shopOccasions[query.occasion] ?? query.occasion, href: shopHref({ ...query, occasion: null, page: 1 }) }]
+      ? [{ label: formatSlugLabel(query.occasion), href: shopHref({ ...query, occasion: null, page: 1 }) }]
       : []),
     ...(query.price
       ? [{ label: priceBands.find((b) => b.id === query.price)?.label ?? "", href: shopHref({ ...query, price: null, page: 1 }) }]
@@ -111,20 +121,49 @@ const emptyDecor: readonly DecorItem[] = [
 ];
 
 export function EmptyState({ query }: { query: ShopQuery }) {
+  const isSearch = Boolean(query.q);
+  const isCollection = Boolean(query.collection);
+  const isCategory = Boolean(query.categories.length || query.subcategory);
+  const isFiltering = hasActiveFilters(query);
+
+  let title = "No products found";
+  let message = "Try adjusting your filters and explore something new!";
+
+  if (isSearch) {
+    title = `No results for “${query.q}”`;
+    message = "Try searching with different keywords, check for typos, or browse by category.";
+  } else if (isCollection) {
+    title = "No products in this collection";
+    message = "We're curating new items for this collection. Please check back soon!";
+  } else if (isCategory) {
+    title = "No products in this category";
+    message = "We don't have items matching this category right now. Explore other sections!";
+  } else if (!isFiltering) {
+    title = "Catalog Updating";
+    message = "Our online collection is being updated with fresh supplies. Contact us directly on WhatsApp for immediate orders!";
+  }
+
   return (
     <div className="relative overflow-hidden rounded-panel bg-linear-to-br from-blush via-cream to-lavender-mist px-6 py-16 text-center">
       <DecorLayer items={emptyDecor} />
       <span className="relative mx-auto grid size-16 place-items-center rounded-2xl bg-white text-primary-strong shadow-card">
         <SearchX aria-hidden className="size-8" strokeWidth={1.6} />
       </span>
-      <h2 className="relative mt-5 text-xl font-bold sm:text-2xl">No products found</h2>
-      <p className="relative mx-auto mt-2 max-w-[42ch] text-muted-foreground">
-        Try adjusting your filters and explore something new!
+      <h2 className="relative mt-5 text-xl font-bold sm:text-2xl">{title}</h2>
+      <p className="relative mx-auto mt-2 max-w-[46ch] text-muted-foreground">
+        {message}
       </p>
-      <ButtonLink href={shopHref({ sort: query.sort })} scroll={false} className="relative mt-7">
-        Reset Filters
-        <ButtonArrow />
-      </ButtonLink>
+      {isFiltering ? (
+        <ButtonLink href={shopHref({ sort: query.sort })} scroll={false} className="relative mt-7">
+          Reset Filters
+          <ButtonArrow />
+        </ButtonLink>
+      ) : (
+        <ButtonLink href={routes.home} className="relative mt-7">
+          Back to Home
+          <ButtonArrow />
+        </ButtonLink>
+      )}
     </div>
   );
 }

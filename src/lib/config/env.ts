@@ -34,6 +34,15 @@ function resolveSiteUrl(): string {
   }
 }
 
+const DEFAULT_API_URL = "https://sprinkles-sparkles-backend.vercel.app";
+
+function resolveApiUrl(): string {
+  const candidate = process.env.NEXT_PUBLIC_API_URL?.trim();
+  if (!candidate) return DEFAULT_API_URL;
+  return candidate.replace(/\/+$/, "");
+}
+
 export const publicEnv = {
   siteUrl: resolveSiteUrl(),
+  apiUrl: resolveApiUrl(),
 } as const;

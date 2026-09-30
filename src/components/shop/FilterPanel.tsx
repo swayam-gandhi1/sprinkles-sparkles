@@ -35,6 +35,7 @@ function Group({ title, children, defaultOpen = true }: { title: string; childre
 }
 
 function Count({ value }: { value: number }) {
+  if (value <= 0) return null;
   return <span className="ml-auto text-xs text-muted-foreground tabular-nums">({value})</span>;
 }
 
@@ -48,6 +49,8 @@ type RadioGroupProps = {
 };
 
 function RadioOptions({ name, legend, options, value, allLabel, onChange }: RadioGroupProps) {
+  const hasAnyCounts = options.some((o) => o.count > 0);
+
   return (
     <fieldset>
       <legend className="sr-only">{legend}</legend>
@@ -61,7 +64,7 @@ function RadioOptions({ name, legend, options, value, allLabel, onChange }: Radi
             type="radio"
             name={name}
             checked={value === option.value}
-            disabled={option.count === 0 && value !== option.value}
+            disabled={hasAnyCounts && option.count === 0 && value !== option.value}
             onChange={() => onChange(option.value)}
             className={inputClass}
           />
@@ -109,12 +112,13 @@ export function FilterPanel({ query, facets, showTitle = true, className }: Filt
           <legend className="sr-only">Categories</legend>
           {facets.categories.map((option) => {
             const checked = query.categories.includes(option.value);
+            const hasAnyCategoryCounts = facets.categories.some((o) => o.count > 0);
             return (
               <label key={option.value} className={optionRow}>
                 <input
                   type="checkbox"
                   checked={checked}
-                  disabled={option.count === 0 && !checked}
+                  disabled={hasAnyCategoryCounts && option.count === 0 && !checked}
                   onChange={() => toggleCategory(option.value)}
                   className={cn(inputClass, "rounded")}
                 />

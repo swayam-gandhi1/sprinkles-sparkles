@@ -12,6 +12,7 @@ import { DesktopNav } from "./DesktopNav";
 import { HeaderShell } from "./HeaderShell";
 import { MobileNav } from "./MobileNav";
 import { MobileSearch } from "./MobileSearch";
+import { getNavigationItems } from "@/lib/api/navigation";
 import { SearchForm } from "./SearchForm";
 
 const actions = [
@@ -22,11 +23,13 @@ const actions = [
 
 const iconButton = cn(buttonVariants({ variant: "ghost", size: "icon" }), "[&_svg]:size-[22px]");
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const navItems = await getNavigationItems();
+
   return (
     <HeaderShell>
       <Container className="flex items-center gap-1 py-2 sm:gap-2 lg:gap-6 lg:py-3 xl:gap-8">
-        <MobileNav logo={<Logo className="w-[92px]" sizes="130px" />} />
+        <MobileNav logo={<Logo className="w-[92px]" sizes="130px" />} items={navItems} />
 
         <Logo
           priority
@@ -64,7 +67,7 @@ export function SiteHeader() {
               WhatsApp Us
             </a>
           </div>
-          <DesktopNav className="mt-1 -ml-1.5 xl:-ml-3" />
+          <DesktopNav className="mt-1 -ml-1.5 xl:-ml-3" items={navItems} />
         </div>
 
         {/* Mobile / tablet actions */}

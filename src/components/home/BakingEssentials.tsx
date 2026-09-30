@@ -6,7 +6,8 @@ import { ArrowLink } from "@/components/common/ArrowLink";
 import { Highlight, SectionHeading } from "@/components/common/SectionHeading";
 import { tones } from "@/components/common/tones";
 import { Section } from "@/components/layout/Section";
-import { bakingEssentials, essentialsIntro } from "@/data/home";
+import { essentialsIntro } from "@/data/home";
+import { getCategories } from "@/lib/api/categories";
 import { routes } from "@/lib/config/routes";
 import { cn } from "@/lib/utils/cn";
 import type { ProductGroup } from "@/types/content";
@@ -54,31 +55,40 @@ function EssentialCard({ group }: { group: ProductGroup }) {
   );
 }
 
-/** Primary product discovery grid — the hero's "Explore Products" target. */
-export function BakingEssentials() {
+/** Primary product discovery grid — 100% backend-driven category tiles. */
+export async function BakingEssentials() {
+  const categories = await getCategories();
+  const groups: ProductGroup[] = categories.slice(0, 8).map((cat) => ({
+    name: cat.name,
+    href: routes.category(cat.slug),
+    icon: cat.icon,
+    tone: cat.tone,
+  }));
+
+  if (!groups.length) return null;
+
   return (
     <Section id="products" aria-labelledby="products-title" className="scroll-mt-20 lg:scroll-mt-32">
       <FadeUp>
         <SectionHeading
           id="products-title"
-          eyebrow="Everything bakers need"
           title={
             <>
-              Everything You Need to <Highlight>Bake, Decorate &amp; Create</Highlight>
+              Everything for <Highlight>Baking & Decorating</Highlight>
             </>
           }
           description={essentialsIntro}
           action={
-            <ArrowLink href={routes.categories} className="hidden md:inline-flex">
-              View All Categories
+            <ArrowLink href={routes.shop} className="hidden sm:inline-flex">
+              View All Products
             </ArrowLink>
           }
         />
       </FadeUp>
 
-      <StaggerContainer className="mt-10 lg:mt-12" stagger={0.05}>
-        <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
-          {bakingEssentials.map((group) => (
+      <StaggerContainer className="mt-10 lg:mt-12" stagger={0.045}>
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+          {groups.map((group) => (
             <li key={group.name}>
               <StaggerItem className="h-full">
                 <EssentialCard group={group} />

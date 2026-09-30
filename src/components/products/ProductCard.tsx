@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { tones } from "@/components/common/tones";
-import { shopCategories } from "@/data/shop";
+import { getCategoryVisuals } from "@/lib/api/categories";
 import { routes } from "@/lib/config/routes";
 import { cn } from "@/lib/utils/cn";
 import type { Product } from "@/types/product";
@@ -17,14 +17,21 @@ type ProductCardProps = {
 };
 
 /**
- * Reusable product tile. Contains no server-only code, so it renders from both
- * Server Components (shop grid) and Client Components (wishlist page).
+ * Reusable product tile. 100% API-driven category and media handling.
  */
 export function ProductCard({ product, priority = false, className }: ProductCardProps) {
-  const category = shopCategories.find((c) => c.slug === product.category);
-  const tone = tones[category?.tone ?? "blush"];
+  const visual = getCategoryVisuals(product.category);
+  const tone = tones[visual.tone];
   const href = routes.product(product.slug);
   const discount = discountPercent(product);
+  const categoryName =
+    product.categoryName ||
+    (product.category && product.category !== "all"
+      ? product.category
+          .split("-")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ")
+      : "");
 
   return (
     <article
@@ -37,7 +44,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
       <div className={cn("relative aspect-square overflow-hidden bg-linear-to-br", tone.gradient)}>
         <Image
           src={product.image.src}
-          alt={product.image.alt}
+          alt={product.image.alt || product.name}
           fill
           sizes="(min-width: 1280px) 17rem, (min-width: 1024px) 22vw, (min-width: 640px) 30vw, 46vw"
           preload={priority}
@@ -62,9 +69,11 @@ export function ProductCard({ product, priority = false, className }: ProductCar
       </div>
 
       <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <p className={cn("text-[0.6875rem] font-semibold tracking-wide uppercase sm:text-xs", tone.text)}>
-          {category?.name}
-        </p>
+        {categoryName ? (
+          <p className={cn("text-[0.6875rem] font-semibold tracking-wide uppercase sm:text-xs", tone.text)}>
+            {categoryName}
+          </p>
+        ) : null}
         <h3 className="mt-1 line-clamp-2 min-h-[2.5em] text-sm leading-snug font-semibold sm:text-[0.9375rem]">
           <Link href={href} className="transition-colors after:absolute after:inset-0 after:z-0 hover:text-primary-strong">
             {product.name}

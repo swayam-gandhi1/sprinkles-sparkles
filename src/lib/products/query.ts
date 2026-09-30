@@ -1,4 +1,4 @@
-import { priceBands, SHOP_PAGE_SIZE, shopCategories, shopCollections, shopOccasions, sortOptions } from "@/data/shop";
+import { priceBands, SHOP_PAGE_SIZE, sortOptions } from "@/data/shop";
 import { routes } from "@/lib/config/routes";
 import type { FacetOption, Product, ShopQuery, ShopResult, SortKey } from "@/types/product";
 
@@ -12,7 +12,7 @@ type RawParams = Record<string, string | string[] | undefined>;
 
 const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)?.trim() ?? "";
 
-const categorySlugs = new Set(shopCategories.map((c) => c.slug));
+const isValidSlug = (s: string) => Boolean(s && /^[a-z0-9_-]+$/i.test(s));
 const sortKeys = new Set<string>(sortOptions.map((o) => o.value));
 
 /** Parse and validate URL search params; unknown values are dropped, never trusted. */
@@ -20,9 +20,11 @@ export function parseShopQuery(params: RawParams): ShopQuery {
   const categories = first(params.category)
     .split(",")
     .map((s) => s.trim())
-    .filter((s) => categorySlugs.has(s));
+    .filter(isValidSlug);
+  const subcategory = first(params.subcategory);
   const collection = first(params.collection);
   const occasion = first(params.occasion);
+  const brand = first(params.brand);
   const price = first(params.price);
   const sort = first(params.sort);
   const page = Number.parseInt(first(params.page), 10);
@@ -30,8 +32,10 @@ export function parseShopQuery(params: RawParams): ShopQuery {
   return {
     q: first(params.q).slice(0, 80),
     categories: [...new Set(categories)],
-    collection: collection in shopCollections ? collection : null,
-    occasion: occasion in shopOccasions ? occasion : null,
+    subcategory: isValidSlug(subcategory) ? subcategory : null,
+    collection: isValidSlug(collection) ? collection : null,
+    occasion: isValidSlug(occasion) ? occasion : null,
+    brand: isValidSlug(brand) ? brand : null,
     price: priceBands.some((b) => b.id === price) ? price : null,
     inStockOnly: first(params.stock) === "in",
     sort: sortKeys.has(sort) ? (sort as SortKey) : "featured",
@@ -44,8 +48,10 @@ export function shopHref(query: Partial<ShopQuery>) {
   const params = new URLSearchParams();
   if (query.q) params.set("q", query.q);
   if (query.categories?.length) params.set("category", query.categories.join(","));
+  if (query.subcategory) params.set("subcategory", query.subcategory);
   if (query.collection) params.set("collection", query.collection);
   if (query.occasion) params.set("occasion", query.occasion);
+  if (query.brand) params.set("brand", query.brand);
   if (query.price) params.set("price", query.price);
   if (query.inStockOnly) params.set("stock", "in");
   if (query.sort && query.sort !== "featured") params.set("sort", query.sort);
@@ -55,7 +61,16 @@ export function shopHref(query: Partial<ShopQuery>) {
 }
 
 export const hasActiveFilters = (q: ShopQuery) =>
-  Boolean(q.q || q.categories.length || q.collection || q.occasion || q.price || q.inStockOnly);
+  Boolean(
+    q.q ||
+      q.categories.length ||
+      q.subcategory ||
+      q.collection ||
+      q.occasion ||
+      q.brand ||
+      q.price ||
+      q.inStockOnly,
+  );
 
 const normalise = (s: string) => s.toLowerCase().normalize("NFKD");
 
@@ -64,12 +79,12 @@ type Predicate = (p: Product) => boolean;
 function predicates(q: ShopQuery): Record<"q" | "category" | "collection" | "occasion" | "price" | "stock", Predicate> {
   const band = priceBands.find((b) => b.id === q.price);
   const terms = normalise(q.q).split(/\s+/).filter(Boolean);
-  const categoryName = (slug: string) => shopCategories.find((c) => c.slug === slug)?.name ?? "";
 
   return {
     q: (p) => {
       if (!terms.length) return true;
-      const haystack = normalise(`${p.name} ${categoryName(p.category)} ${p.description}`);
+      const catName = p.categoryName || p.category.replace(/-/g, " ");
+      const haystack = normalise(`${p.name} ${catName} ${p.description}`);
       return terms.every((t) => haystack.includes(t));
     },
     category: (p) => !q.categories.length || q.categories.includes(p.category),
@@ -138,12 +153,39 @@ export function queryProducts(products: readonly Product[], q: ShopQuery): ShopR
     pageSize: SHOP_PAGE_SIZE,
     facets: {
       categories: facet(
-        shopCategories.map((c) => [c.slug, c.name]),
+        [...inCatalog.categories].map((slug) => [
+          slug,
+          products.find((p) => p.category === slug)?.categoryName ||
+            slug
+              .split("-")
+              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+              .join(" "),
+        ]),
         categoryCounts,
         inCatalog.categories,
       ),
-      collections: facet(Object.entries(shopCollections), collectionCounts, inCatalog.collections),
-      occasions: facet(Object.entries(shopOccasions), occasionCounts, inCatalog.occasions),
+      collections: facet(
+        [...inCatalog.collections].map((slug) => [
+          slug,
+          slug
+            .split("-")
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" "),
+        ]),
+        collectionCounts,
+        inCatalog.collections,
+      ),
+      occasions: facet(
+        [...inCatalog.occasions].map((slug) => [
+          slug,
+          slug
+            .split("-")
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" "),
+        ]),
+        occasionCounts,
+        inCatalog.occasions,
+      ),
       prices: priceBands.map((b) => ({
         value: b.id,
         label: b.label,

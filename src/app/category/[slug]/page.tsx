@@ -1,32 +1,27 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
+import { getCategories } from "@/lib/api/categories";
+import { getCollections } from "@/lib/api/collections";
 import { shopHref } from "@/lib/products/query";
-import type { ShopQuery } from "@/types/product";
 
-/*
- * The header and homepage link to `/category/<slug>` (see src/data/navigation.ts
- * and categories.ts). Until dedicated category pages exist, each slug opens the
- * matching filtered shop view.
- */
-const categoryFilters: Record<string, Partial<ShopQuery>> = {
-  "baking-tins": { categories: ["baking-tins"] },
-  boxes: { categories: ["boxes"] },
-  "chocolate-boxes": { categories: ["boxes"] },
-  sprinkles: { categories: ["sprinkles"] },
-  "tools-equipment": { categories: ["tools-equipment"] },
-  "knife-cutters": { categories: ["tools-equipment"] },
-  "acrylic-toppers": { categories: ["toppers"] },
-  "paper-theme-toppers": { categories: ["toppers"] },
-  "diwali-collection": { categories: ["diwali-collection"] },
-  "diwali-exclusive-range": { categories: ["diwali-collection"] },
-  "birthday-collection": { occasion: "birthdays" },
-};
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
 
-export function generateStaticParams() {
-  return Object.keys(categoryFilters).map((slug) => ({ slug }));
-}
+  const [categories, collections] = await Promise.all([
+    getCategories(),
+    getCollections(),
+  ]);
 
-export default async function CategoryPage({ params }: PageProps<"/category/[slug]">) {
-  const filter = categoryFilters[(await params).slug];
-  if (!filter) notFound();
-  redirect(shopHref(filter));
+  // If slug matches a known collection, redirect to collection query
+  const isCollection = collections.some((c) => c.slug === slug);
+  if (isCollection || slug.includes("collection")) {
+    redirect(shopHref({ collection: slug }));
+  }
+
+  // If slug is a category or alias
+  const targetCategorySlug = slug === "boxes" ? "boxes-packaging" : slug;
+  redirect(shopHref({ categories: [targetCategorySlug] }));
 }

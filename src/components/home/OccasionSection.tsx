@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Cake, Sparkles, PartyPopper, Flame, HeartHandshake, BookHeart, BriefcaseBusiness, Gift } from "lucide-react";
 import { ImageReveal } from "@/components/animations/ImageReveal";
 import { FadeIn, FadeUp } from "@/components/animations/Reveal";
 import { StaggerContainer, StaggerItem } from "@/components/animations/Stagger";
@@ -8,12 +8,33 @@ import { ScriptNote } from "@/components/common/ScriptNote";
 import { Highlight, SectionHeading } from "@/components/common/SectionHeading";
 import { tones } from "@/components/common/tones";
 import { Section } from "@/components/layout/Section";
-import { occasions } from "@/data/home";
 import { siteImages } from "@/data/images";
+import { getOccasions } from "@/lib/api/occasions";
+import { routes } from "@/lib/config/routes";
 import { cn } from "@/lib/utils/cn";
+import type { Tone } from "@/types/content";
 
-/** Aqua band: one real store photo beside colourful, scannable occasion cards. */
-export function OccasionSection() {
+const occasionVisuals: Record<string, { icon: typeof Cake; tone: Tone }> = {
+  birthday: { icon: Cake, tone: "blush" },
+  birthdays: { icon: Cake, tone: "blush" },
+  festivals: { icon: Flame, tone: "sunny" },
+  diwali: { icon: Flame, tone: "sunny" },
+  rakhi: { icon: HeartHandshake, tone: "cream" },
+  "teachers-day": { icon: BookHeart, tone: "aqua" },
+  "corporate-gifting": { icon: BriefcaseBusiness, tone: "lavender" },
+  "special-occasions": { icon: PartyPopper, tone: "blush" },
+  wedding: { icon: Gift, tone: "lavender" },
+  anniversary: { icon: HeartHandshake, tone: "blush" },
+  christmas: { icon: Sparkles, tone: "sunny" },
+};
+
+const defaultToneList: Tone[] = ["blush", "sunny", "cream", "aqua", "lavender"];
+
+/** Aqua band: one real store photo beside colourful, scannable occasion cards from live backend. */
+export async function OccasionSection() {
+  const backendOccasions = await getOccasions();
+  if (!backendOccasions.length) return null;
+
   return (
     <Section aria-labelledby="occasions-title" className="relative overflow-hidden bg-aqua-mist">
       <div aria-hidden className="sprinkle-pattern pointer-events-none absolute inset-0 opacity-50" />
@@ -48,35 +69,43 @@ export function OccasionSection() {
           </FadeUp>
           <StaggerContainer className="mt-8" stagger={0.06}>
             <ul className="grid gap-3 sm:grid-cols-2">
-              {occasions.map((occasion) => {
-                const Icon = occasion.icon;
+              {backendOccasions.map((occasion, i) => {
+                const visual = occasionVisuals[occasion.slug] || {
+                  icon: PartyPopper,
+                  tone: defaultToneList[i % defaultToneList.length],
+                };
+                const Icon = visual.icon;
+                const tone = tones[visual.tone ?? "blush"];
+
                 return (
-                  <li key={occasion.name}>
+                  <li key={occasion.slug}>
                     <StaggerItem className="h-full">
                       <Link
-                        href={occasion.href}
+                        href={routes.occasion(occasion.slug)}
                         className="group flex h-full items-center gap-4 rounded-2xl border border-white bg-white px-4 py-4 shadow-card transition-[translate,box-shadow] duration-300 ease-premium hover:-translate-y-0.5 hover:shadow-card-hover sm:px-5"
                       >
                         <span
                           className={cn(
-                            "grid size-12 shrink-0 place-items-center rounded-2xl transition-transform duration-300 ease-premium group-hover:-rotate-6",
-                            tones[occasion.tone].icon,
+                            "grid size-12 shrink-0 place-items-center rounded-2xl transition-transform duration-300 ease-premium group-hover:scale-105 group-hover:-rotate-6",
+                            tone.icon,
                           )}
                         >
-                          <Icon aria-hidden className="size-6" strokeWidth={1.7} />
+                          <Icon aria-hidden className="size-6" strokeWidth={1.6} />
                         </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block text-base font-semibold transition-colors group-hover:text-primary-strong">
+                        <span className="flex min-w-0 flex-1 flex-col">
+                          <span className="text-[0.9375rem] font-semibold text-foreground group-hover:text-primary-strong">
                             {occasion.name}
                           </span>
-                          <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
-                            {occasion.description}
+                          <span className="line-clamp-1 text-xs text-muted-foreground">
+                            {occasion.description || "Browse collection"}
                           </span>
                         </span>
-                        <ArrowRight
+                        <span
                           aria-hidden
-                          className="size-4 shrink-0 text-primary-strong transition-transform duration-300 ease-premium group-hover:translate-x-1"
-                        />
+                          className="grid size-7 shrink-0 place-items-center rounded-full bg-cream text-muted-foreground transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground"
+                        >
+                          <ArrowRight className="size-3.5" />
+                        </span>
                       </Link>
                     </StaggerItem>
                   </li>

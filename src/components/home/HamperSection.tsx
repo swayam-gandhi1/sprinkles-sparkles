@@ -9,8 +9,8 @@ import { Highlight } from "@/components/common/SectionHeading";
 import { toneAt, tones } from "@/components/common/tones";
 import { Section } from "@/components/layout/Section";
 import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
-import { hamperOccasions } from "@/data/home";
 import { siteImages } from "@/data/images";
+import { getOccasions } from "@/lib/api/occasions";
 import { routes } from "@/lib/config/routes";
 import { cn } from "@/lib/utils/cn";
 
@@ -21,7 +21,10 @@ const decor: readonly DecorItem[] = [
 ];
 
 /** Wide hamper photograph with an overlapping copy card. */
-export function HamperSection() {
+export async function HamperSection() {
+  const backendOccasions = await getOccasions();
+  const occasionNames = backendOccasions.slice(0, 5).map((o) => o.name);
+
   return (
     <Section aria-labelledby="hamper-title">
       <div className="relative">
@@ -58,22 +61,24 @@ export function HamperSection() {
           <Eyebrow>Customized hampers</Eyebrow>
           <h2
             id="hamper-title"
-            className="mt-3 text-[1.875rem] leading-tight font-bold tracking-tight sm:text-[2.25rem] lg:text-[2.5rem]"
+            className="mt-3 text-[1.875rem] leading-tight font-bold tracking-tight sm:text-[2.25rem]"
           >
-            Thoughtful Gifts, <Highlight>Made Your Way</Highlight>
+            Curated Hampers &amp; <Highlight>Personalized Gifting</Highlight>
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
             Create beautiful hampers for birthdays, festivals, corporate gifting and special occasions. Choose the
             products, packaging and finishing touches that make your gift feel personal and memorable.
           </p>
-          <ul className="mt-5 flex flex-wrap gap-2 text-[0.8125rem] font-semibold">
-            {hamperOccasions.map((occasion, index) => (
-              <li key={occasion} className={cn("rounded-full px-3 py-1.5", tones[toneAt(index)].icon)}>
-                {occasion}
-              </li>
-            ))}
-          </ul>
-          <ButtonLink href={routes.collection("gifting")} size="lg" className="mt-8">
+          {occasionNames.length > 0 ? (
+            <ul className="mt-5 flex flex-wrap gap-2 text-[0.8125rem] font-semibold">
+              {occasionNames.map((occasion, index) => (
+                <li key={occasion} className={cn("rounded-full px-3 py-1.5", tones[toneAt(index)].icon)}>
+                  {occasion}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <ButtonLink href={routes.collection("gifting-collection")} size="lg" className="mt-8">
             Explore Gifting
             <ButtonArrow />
           </ButtonLink>

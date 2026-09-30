@@ -11,29 +11,52 @@ export type ProductImage = ImageAsset & {
   placeholder?: boolean;
 };
 
+export type ProductVariant = {
+  id: string;
+  name: string;
+  sku?: string;
+  price?: number;
+  salePrice?: number;
+  stock?: number;
+  inStock: boolean;
+  options?: Record<string, string>;
+};
+
 export type Product = {
   id: string;
   slug: string;
   name: string;
   /** Slug of a `ShopCategory`. */
   category: string;
+  categoryName?: string;
+  subcategory?: string;
+  subcategoryName?: string;
+  brand?: string;
   /** Homepage collection slugs (`/shop?collection=…`), e.g. "decorate". */
   collections: readonly string[];
   /** Occasion slugs (`/shop?occasion=…`), e.g. "birthdays". */
   occasions?: readonly string[];
   /** One or two sentences for the product page. */
   description: string;
+  shortDescription?: string;
   /** Selling price in INR. */
   price: number;
   /** Original price in INR; shown struck through when higher than `price`. */
   compareAtPrice?: number;
+  salePrice?: number;
   /** Price is a starting point (customised items) — shown as "From ₹…". */
   priceFrom?: boolean;
   isNew?: boolean;
+  isFeatured?: boolean;
   inStock: boolean;
+  stockCount?: number;
   /** ISO date, used for "Newest" sorting. */
   addedAt: string;
   image: ProductImage;
+  images?: readonly ProductImage[];
+  variants?: readonly ProductVariant[];
+  weight?: string;
+  dimensions?: string;
 };
 
 export type ShopCategory = {
@@ -41,6 +64,8 @@ export type ShopCategory = {
   name: string;
   icon: LucideIcon;
   tone: Tone;
+  description?: string;
+  subcategories?: readonly { slug: string; name: string; description?: string }[];
 };
 
 export type SortKey = "featured" | "newest" | "price-asc" | "price-desc" | "name-asc";
@@ -59,6 +84,8 @@ export type ShopQuery = {
   categories: readonly string[];
   collection: string | null;
   occasion: string | null;
+  subcategory?: string | null;
+  brand?: string | null;
   price: string | null;
   inStockOnly: boolean;
   sort: SortKey;

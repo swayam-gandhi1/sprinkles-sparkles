@@ -9,7 +9,7 @@ import { ChevronDown, Heart, Menu, Phone, ShoppingBag, User, X } from "lucide-re
 import { premiumEase } from "@/components/animations/presets";
 import { WhatsAppIcon } from "@/components/common/SocialIcons";
 import { buttonVariants } from "@/components/ui/Button";
-import { mainNav } from "@/data/navigation";
+import { staticNavItems } from "@/lib/api/navigation";
 import { routes } from "@/lib/config/routes";
 import { siteConfig } from "@/lib/config/site";
 import { cn } from "@/lib/utils/cn";
@@ -37,8 +37,16 @@ const accountLinks = [
   { label: "Cart", href: routes.cart, icon: ShoppingBag, color: "text-lavender-strong" },
 ] as const;
 
+import type { NavItem } from "@/types/content";
+
 /** Slide-in navigation drawer for screens below `lg`. */
-export function MobileNav({ logo }: { logo: ReactNode }) {
+export function MobileNav({
+  logo,
+  items = staticNavItems,
+}: {
+  logo: ReactNode;
+  items?: readonly NavItem[];
+}) {
   const pathname = usePathname();
   // Remember the page the drawer was opened on — navigating anywhere closes it.
   const [openedOn, setOpenedOn] = useState<string | null>(null);
@@ -128,7 +136,7 @@ export function MobileNav({ logo }: { logo: ReactNode }) {
 
             <nav aria-label="Mobile" className="flex-1 overflow-y-auto overscroll-contain px-3 py-4">
               <m.ul variants={listVariants} initial="hidden" animate="visible" className="space-y-0.5">
-                {mainNav.map((item) => (
+                {items.map((item) => (
                   <m.li key={item.label} variants={itemVariants}>
                     {item.children ? (
                       <>

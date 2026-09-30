@@ -9,10 +9,10 @@ import { Highlight, SectionHeading } from "@/components/common/SectionHeading";
 import { tones } from "@/components/common/tones";
 import { Section } from "@/components/layout/Section";
 import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
-import { categories } from "@/data/categories";
+import { getCategories } from "@/lib/api/categories";
 import { routes } from "@/lib/config/routes";
 import { cn } from "@/lib/utils/cn";
-import type { Category } from "@/types/content";
+import type { ShopCategory } from "@/types/product";
 
 const festiveDecor: readonly DecorItem[] = [
   { shape: "sparkle", className: "top-6 right-[8%] size-7 text-sunny", float: true },
@@ -27,7 +27,7 @@ const festiveDecor: readonly DecorItem[] = [
  * Round category tile — a colourful illustrated disc until category
  * photography exists (then `category.image.src` can be rendered in the disc).
  */
-function CategoryTile({ category }: { category: Category }) {
+function CategoryTile({ category }: { category: ShopCategory }) {
   const Icon = category.icon;
   const tone = tones[category.tone];
 
@@ -87,7 +87,13 @@ function FestiveFeature({ className }: { className?: string }) {
   );
 }
 
-export function CategoryShowcase() {
+export async function CategoryShowcase() {
+  const categories = await getCategories();
+
+  if (!categories.length) {
+    return null;
+  }
+
   return (
     <Section id="collections" aria-labelledby="collections-title" className="scroll-mt-20 bg-cream lg:scroll-mt-32">
       <FadeUp>

@@ -5,12 +5,15 @@ import { StaggerContainer, StaggerItem } from "@/components/animations/Stagger";
 import { Highlight, SectionHeading } from "@/components/common/SectionHeading";
 import { tones } from "@/components/common/tones";
 import { Section } from "@/components/layout/Section";
-import { shopCategories } from "@/data/shop";
+import { getCategories } from "@/lib/api/categories";
 import { shopHref } from "@/lib/products/query";
 import { cn } from "@/lib/utils/cn";
 
-/** Every shop category as a colourful link tile — "what we stock", straight into the filtered shop. */
-export function StoreRange() {
+/** Every shop category as a colourful link tile from the live backend API. */
+export async function StoreRange() {
+  const categories = await getCategories();
+  if (!categories.length) return null;
+
   return (
     <Section aria-labelledby="range-title" className="bg-cream">
       <FadeUp>
@@ -28,7 +31,7 @@ export function StoreRange() {
       </FadeUp>
       <StaggerContainer className="mt-10" stagger={0.04}>
         <ul className="flex flex-wrap justify-center gap-3">
-          {shopCategories.map((category) => {
+          {categories.map((category) => {
             const tone = tones[category.tone];
             return (
               <li key={category.slug}>

@@ -7,23 +7,29 @@ import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
 import { ChevronDown } from "lucide-react";
 import { premiumEase } from "@/components/animations/presets";
-import { mainNav } from "@/data/navigation";
+import { staticNavItems } from "@/lib/api/navigation";
 import { cn } from "@/lib/utils/cn";
 import { isActivePath } from "@/lib/utils/nav";
-import type { NavLink } from "@/types/content";
+import type { NavItem, NavLink } from "@/types/content";
 
 const linkClass =
   "relative inline-flex h-10 items-center gap-1 px-1.5 text-[0.8125rem] font-medium text-foreground/85 transition-colors hover:text-primary-strong xl:px-3 xl:text-sm " +
   "after:absolute after:inset-x-1.5 after:bottom-1 after:h-[3px] after:origin-left after:scale-x-0 after:rounded-full after:bg-linear-to-r after:from-pink after:to-turquoise after:transition-transform after:duration-300 after:ease-premium hover:after:scale-x-100 xl:after:inset-x-3";
 const activeClass = "text-primary-strong after:scale-x-100";
 
-export function DesktopNav({ className }: { className?: string }) {
+export function DesktopNav({
+  className,
+  items = staticNavItems,
+}: {
+  className?: string;
+  items?: readonly NavItem[];
+}) {
   const pathname = usePathname();
 
   return (
     <nav aria-label="Main" className={className}>
       <ul className="flex flex-wrap items-center">
-        {mainNav.map((item) => {
+        {items.map((item) => {
           const active = isActivePath(pathname, item.href);
           return (
             <li key={item.label}>
