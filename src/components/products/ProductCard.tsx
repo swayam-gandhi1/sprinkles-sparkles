@@ -48,7 +48,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
 
       <div className="pointer-events-none absolute inset-x-2.5 top-2.5 z-10 flex items-start justify-between gap-2">
         <div className="flex flex-col items-start gap-1.5">
-          {!product.inStock ? (
+          {product.inStock === false ? (
             <span className="rounded-full bg-navy px-2.5 py-1 text-[0.6875rem] font-semibold text-white">Out of stock</span>
           ) : discount ? (
             <span className="rounded-full bg-primary px-2.5 py-1 text-[0.6875rem] font-semibold text-white">
@@ -75,7 +75,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
           <AddToCartButton
             slug={product.slug}
             name={product.name}
-            inStock={product.inStock}
+            inStock={product.inStock !== false}
             size="sm"
             className="h-10 text-[0.8125rem]"
           />

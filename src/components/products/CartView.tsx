@@ -12,8 +12,9 @@ import { formatPrice } from "@/lib/products/query";
 import type { Product } from "@/types/product";
 import { ProductCardSkeleton } from "./ProductCardSkeleton";
 
+// 44px touch targets on phones, the original 40px from `sm` up.
 const stepButton =
-  "grid size-10 place-items-center rounded-full text-foreground transition-colors hover:bg-blush hover:text-primary-strong disabled:opacity-40";
+  "grid size-11 place-items-center rounded-full text-foreground transition-colors hover:bg-blush hover:text-primary-strong disabled:opacity-40 sm:size-10";
 
 /** Cart contents resolved against the catalog. Checkout is not built yet, so orders go via WhatsApp. */
 export function CartView({ products }: { products: readonly Product[] }) {
@@ -22,7 +23,10 @@ export function CartView({ products }: { products: readonly Product[] }) {
   const lines = cart
     .map((line) => ({ ...line, product: products.find((p) => p.slug === line.slug) }))
     .filter((line): line is typeof line & { product: Product } => Boolean(line.product));
-  const subtotal = lines.reduce((sum, line) => sum + line.product.price * line.qty, 0);
+  // Items without a confirmed price make the total unknowable — it's then confirmed on WhatsApp.
+  const subtotal = lines.every((line) => line.product.price !== undefined)
+    ? lines.reduce((sum, line) => sum + (line.product.price ?? 0) * line.qty, 0)
+    : null;
 
   if (!ready) {
     return (
@@ -52,26 +56,49 @@ export function CartView({ products }: { products: readonly Product[] }) {
   const message = [
     "Hi Sprinkle & Sparkle! I'd like to order:",
     ...lines.map((l) => `• ${l.product.name} × ${l.qty}`),
-    `Estimated subtotal: ${formatPrice(subtotal)}`,
+    ...(subtotal !== null ? [`Estimated subtotal: ${formatPrice(subtotal)}`] : []),
   ].join("\n");
   const whatsappOrder = `${siteConfig.contact.whatsappHref}?text=${encodeURIComponent(message)}`;
 
+  const itemCount = lines.reduce((s, l) => s + l.qty, 0);
+
+  /*
+   * Item rows are a grid so nothing needs a fixed width:
+   * - phones: image + details, controls on their own full-width line below;
+   * - sm–md: image | details | controls in one line;
+   * - lg (summary alongside, narrower list): controls drop under the details;
+   * - xl: back to one line.
+   */
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-start">
-      <ul className="divide-y divide-border rounded-card border border-border bg-white shadow-card">
-        {lines.map(({ product, qty }) => (
-          <li key={product.slug} className="flex gap-4 p-4 sm:p-5">
-            <Link href={routes.product(product.slug)} className="relative size-20 shrink-0 overflow-hidden rounded-2xl bg-blush sm:size-24">
-              <Image src={product.image.src} alt={product.image.alt} fill sizes="96px" className="object-cover" />
-            </Link>
-            <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="min-w-0">
-                <Link href={routes.product(product.slug)} className="line-clamp-2 font-semibold hover:text-primary-strong">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+      <div>
+        <p className="mb-3 text-sm font-medium text-muted-foreground sm:mb-4">
+          {itemCount} {itemCount === 1 ? "item" : "items"} in your cart
+        </p>
+        <ul className="divide-y divide-border rounded-card border border-border bg-white shadow-card">
+          {lines.map(({ product, qty }) => (
+            <li
+              key={product.slug}
+              className="grid grid-cols-[5rem_minmax(0,1fr)] items-center gap-x-3 gap-y-3 p-4 sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:gap-x-4 sm:p-5 lg:grid-cols-[6rem_minmax(0,1fr)] xl:grid-cols-[6rem_minmax(0,1fr)_auto]"
+            >
+              <Link
+                href={routes.product(product.slug)}
+                className="relative size-20 overflow-hidden rounded-2xl bg-blush sm:size-24 lg:row-span-2 xl:row-span-1"
+              >
+                <Image src={product.image.src} alt={product.image.alt} fill sizes="96px" className="object-cover" />
+              </Link>
+              <div className="min-w-0 self-center lg:self-end xl:self-center">
+                <Link
+                  href={routes.product(product.slug)}
+                  className="line-clamp-3 text-[0.9375rem] leading-snug font-semibold break-words hover:text-primary-strong sm:line-clamp-2 sm:text-base"
+                >
                   {product.name}
                 </Link>
-                <p className="mt-0.5 text-sm text-muted-foreground">{formatPrice(product.price)} each</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {product.price !== undefined ? `${formatPrice(product.price)} each` : "Price on request"}
+                </p>
               </div>
-              <div className="flex items-center justify-between gap-4 sm:justify-end">
+              <div className="col-span-2 flex items-center justify-between gap-3 sm:col-span-1 sm:justify-end sm:gap-4 lg:col-start-2 lg:self-start lg:justify-between xl:col-start-auto xl:self-center xl:justify-end">
                 <div className="flex items-center rounded-full border border-border" role="group" aria-label={`Quantity of ${product.name}`}>
                   <button
                     type="button"
@@ -94,31 +121,39 @@ export function CartView({ products }: { products: readonly Product[] }) {
                     <Plus aria-hidden className="size-4" />
                   </button>
                 </div>
-                <p className="w-20 text-right font-bold tabular-nums">{formatPrice(product.price * qty)}</p>
-                <button
-                  type="button"
-                  onClick={() => removeFromCart(product.slug)}
-                  aria-label={`Remove ${product.name}`}
-                  className={stepButton}
-                >
-                  <Trash aria-hidden className="size-4" />
-                </button>
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <p className="min-w-16 text-right font-bold tabular-nums">
+                    {product.price !== undefined ? formatPrice(product.price * qty) : "—"}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => removeFromCart(product.slug)}
+                    aria-label={`Remove ${product.name}`}
+                    className={stepButton}
+                  >
+                    <Trash aria-hidden className="size-4" />
+                  </button>
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      <aside aria-label="Order summary" className="rounded-card border border-border bg-white p-6 shadow-card lg:sticky lg:top-32">
+      {/* Tablets: a compact summary aligned under the list; desktop: the original sticky sidebar. */}
+      <aside
+        aria-label="Order summary"
+        className="rounded-card border border-border bg-white p-5 shadow-card sm:p-6 md:ml-auto md:w-full md:max-w-sm lg:sticky lg:top-32 lg:ml-0 lg:max-w-none"
+      >
         <h2 className="text-lg font-bold">Order Summary</h2>
         <dl className="mt-4 space-y-2 text-sm">
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Items</dt>
-            <dd className="font-semibold">{lines.reduce((s, l) => s + l.qty, 0)}</dd>
+            <dd className="font-semibold">{itemCount}</dd>
           </div>
           <div className="flex justify-between border-t border-border pt-3 text-base">
             <dt className="font-semibold">Subtotal</dt>
-            <dd className="font-bold">{formatPrice(subtotal)}</dd>
+            <dd className="font-bold">{subtotal !== null ? formatPrice(subtotal) : "On request"}</dd>
           </div>
         </dl>
         <p className="mt-3 text-xs leading-relaxed text-muted-foreground">

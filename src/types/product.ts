@@ -23,17 +23,21 @@ export type Product = {
   occasions?: readonly string[];
   /** One or two sentences for the product page. */
   description: string;
-  /** Selling price in INR. */
-  price: number;
+  /** Selling price in INR. Absent while a price isn't confirmed — the UI then hides it. */
+  price?: number;
   /** Original price in INR; shown struck through when higher than `price`. */
   compareAtPrice?: number;
   /** Price is a starting point (customised items) — shown as "From ₹…". */
   priceFrom?: boolean;
   isNew?: boolean;
-  inStock: boolean;
+  /** Absent when stock isn't tracked; only `false` shows as out of stock. */
+  inStock?: boolean;
   /** ISO date, used for "Newest" sorting. */
-  addedAt: string;
+  addedAt?: string;
+  /** Primary photo (cards, cart). */
   image: ProductImage;
+  /** Full gallery starting with `image`, when there is more than one photo. */
+  images?: readonly ProductImage[];
 };
 
 export type ShopCategory = {

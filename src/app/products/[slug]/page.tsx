@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CircleCheck, CircleX, Truck } from "lucide-react";
@@ -10,6 +9,7 @@ import { tones } from "@/components/common/tones";
 import { Container } from "@/components/layout/Container";
 import { AddToCartButton } from "@/components/products/AddToCartButton";
 import { ProductCard } from "@/components/products/ProductCard";
+import { ProductGallery } from "@/components/products/ProductGallery";
 import { discountPercent, ProductPrice } from "@/components/products/ProductPrice";
 import { WishlistButton } from "@/components/products/WishlistButton";
 import { shopCategories } from "@/data/shop";
@@ -54,16 +54,10 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
         />
 
         <div className="mt-6 grid gap-8 lg:mt-8 lg:grid-cols-2 lg:gap-14">
-          <div className={cn("relative aspect-square overflow-hidden rounded-panel bg-linear-to-br shadow-card", tone.gradient)}>
-            <Image
-              src={product.image.src}
-              alt={product.image.alt}
-              fill
-              preload
-              sizes="(min-width: 1024px) 38rem, 92vw"
-              style={product.image.position ? { objectPosition: product.image.position } : undefined}
-              className="object-cover"
-            />
+          <ProductGallery
+            images={product.images ?? [product.image]}
+            frameClassName={cn("rounded-panel bg-linear-to-br shadow-card", tone.gradient)}
+          >
             {discount ? (
               <span className="absolute top-4 left-4 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white">
                 {discount}% off
@@ -73,7 +67,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
                 New
               </span>
             ) : null}
-          </div>
+          </ProductGallery>
 
           <div className="lg:py-4">
             {category ? (
@@ -87,20 +81,22 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             ) : null}
             <h1 className="mt-4 text-[1.875rem] leading-tight font-bold tracking-tight sm:text-[2.25rem]">{product.name}</h1>
             <ProductPrice product={product} size="lg" className="mt-4" />
-            <p
-              className={cn(
-                "mt-3 inline-flex items-center gap-1.5 text-sm font-semibold",
-                product.inStock ? "text-accent-strong" : "text-primary-strong",
-              )}
-            >
-              {product.inStock ? <CircleCheck aria-hidden className="size-4" /> : <CircleX aria-hidden className="size-4" />}
-              {product.inStock ? "In stock" : "Out of stock"}
-            </p>
+            {product.inStock !== undefined ? (
+              <p
+                className={cn(
+                  "mt-3 inline-flex items-center gap-1.5 text-sm font-semibold",
+                  product.inStock ? "text-accent-strong" : "text-primary-strong",
+                )}
+              >
+                {product.inStock ? <CircleCheck aria-hidden className="size-4" /> : <CircleX aria-hidden className="size-4" />}
+                {product.inStock ? "In stock" : "Out of stock"}
+              </p>
+            ) : null}
             <p className="mt-5 max-w-[52ch] text-base leading-relaxed text-muted-foreground">{product.description}</p>
 
             <div className="mt-8 flex items-center gap-3">
               <div className="flex-1 sm:max-w-xs">
-                <AddToCartButton slug={product.slug} name={product.name} inStock={product.inStock} size="lg" />
+                <AddToCartButton slug={product.slug} name={product.name} inStock={product.inStock !== false} size="lg" />
               </div>
               <WishlistButton slug={product.slug} name={product.name} className="size-12 border border-border" />
             </div>

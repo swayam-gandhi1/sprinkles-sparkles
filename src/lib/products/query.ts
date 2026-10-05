@@ -1,6 +1,6 @@
 import { priceBands, SHOP_PAGE_SIZE, shopCategories, shopCollections, shopOccasions, sortOptions } from "@/data/shop";
 import { routes } from "@/lib/config/routes";
-import type { FacetOption, Product, ShopQuery, ShopResult, SortKey } from "@/types/product";
+import type { FacetOption, PriceBand, Product, ShopQuery, ShopResult, SortKey } from "@/types/product";
 
 /*
  * Pure shop logic: URL ⇄ query parsing, filtering, facet counts, sorting and
@@ -75,8 +75,8 @@ function predicates(q: ShopQuery): Record<"q" | "category" | "collection" | "occ
     category: (p) => !q.categories.length || q.categories.includes(p.category),
     collection: (p) => !q.collection || p.collections.includes(q.collection),
     occasion: (p) => !q.occasion || (p.occasions ?? []).includes(q.occasion),
-    price: (p) => !band || (p.price >= band.min && (band.max === null || p.price < band.max)),
-    stock: (p) => !q.inStockOnly || p.inStock,
+    price: (p) => !band || inBand(p, band),
+    stock: (p) => !q.inStockOnly || p.inStock !== false,
   };
 }
 
@@ -88,11 +88,20 @@ function matching(products: readonly Product[], q: ShopQuery, skip?: keyof Retur
   return products.filter((p) => preds.every((fn) => fn(p)));
 }
 
+const inBand = (p: Product, band: PriceBand) =>
+  p.price !== undefined && p.price >= band.min && (band.max === null || p.price < band.max);
+
+/** Price order in either direction; unpriced products always sort last. */
+const byPrice = (dir: 1 | -1) => (a: Product, b: Product) =>
+  a.price === undefined || b.price === undefined
+    ? Number(a.price === undefined) - Number(b.price === undefined)
+    : (a.price - b.price) * dir;
+
 const sorters: Record<SortKey, ((a: Product, b: Product) => number) | null> = {
   featured: null,
-  newest: (a, b) => b.addedAt.localeCompare(a.addedAt),
-  "price-asc": (a, b) => a.price - b.price,
-  "price-desc": (a, b) => b.price - a.price,
+  newest: (a, b) => (b.addedAt ?? "").localeCompare(a.addedAt ?? ""),
+  "price-asc": byPrice(1),
+  "price-desc": byPrice(-1),
   "name-asc": (a, b) => a.name.localeCompare(b.name, "en-IN"),
 };
 
@@ -147,9 +156,9 @@ export function queryProducts(products: readonly Product[], q: ShopQuery): ShopR
       prices: priceBands.map((b) => ({
         value: b.id,
         label: b.label,
-        count: priceBase.filter((p) => p.price >= b.min && (b.max === null || p.price < b.max)).length,
+        count: priceBase.filter((p) => inBand(p, b)).length,
       })),
-      outOfStock: products.filter((p) => !p.inStock).length,
+      outOfStock: products.filter((p) => p.inStock === false).length,
     },
   };
 }

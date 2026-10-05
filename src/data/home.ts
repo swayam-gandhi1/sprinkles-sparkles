@@ -96,6 +96,9 @@ export const audiences: readonly Feature[] = [
 export const sparkleBanner =
   "Your baking needs, our collection. Discover the products that help you create something beautiful, delicious and memorable.";
 
+export const diwaliFeature =
+  "Celebrate the festival of lights with beautiful gifting boxes, festive packaging, treats and more from our Diwali Collection.";
+
 export const shoppingNeeds: readonly ShoppingNeed[] = [
   {
     title: "Decorate",

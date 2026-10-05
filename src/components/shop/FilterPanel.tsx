@@ -126,16 +126,19 @@ export function FilterPanel({ query, facets, showTitle = true, className }: Filt
         </fieldset>
       </Group>
 
-      <Group title="Price">
-        <RadioOptions
-          name={`${id}-price`}
-          legend="Price"
-          options={facets.prices}
-          value={query.price}
-          allLabel="Any price"
-          onChange={(price) => go({ price })}
-        />
-      </Group>
+      {/* Hidden when nothing in view has a price yet (e.g. the Diwali range). */}
+      {query.price || facets.prices.some((option) => option.count > 0) ? (
+        <Group title="Price">
+          <RadioOptions
+            name={`${id}-price`}
+            legend="Price"
+            options={facets.prices}
+            value={query.price}
+            allLabel="Any price"
+            onChange={(price) => go({ price })}
+          />
+        </Group>
+      ) : null}
 
       {facets.collections.length ? (
         <Group title="Collections" defaultOpen={Boolean(query.collection)}>

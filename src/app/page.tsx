@@ -1,6 +1,7 @@
 import { AboutSection } from "@/components/home/AboutSection";
 import { BakingEssentials } from "@/components/home/BakingEssentials";
 import { CategoryShowcase } from "@/components/home/CategoryShowcase";
+import { DiwaliFeature } from "@/components/home/DiwaliFeature";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { GetInspired } from "@/components/home/GetInspired";
 import { HamperSection } from "@/components/home/HamperSection";
@@ -25,6 +26,7 @@ export default function HomePage() {
       <AboutSection />
       <ShopByNeed />
       <CategoryShowcase />
+      <DiwaliFeature />
       <HamperSection />
       <OccasionSection />
       <SparkleBanner />

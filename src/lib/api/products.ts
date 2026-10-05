@@ -1,16 +1,40 @@
+import { type DiwaliProductRecord, getLocalDiwaliProducts } from "@/data/diwali-products";
 import { products as sampleCatalog } from "@/data/products";
 import { queryProducts } from "@/lib/products/query";
-import type { Product, ShopQuery, ShopResult } from "@/types/product";
+import type { Product, ProductImage, ShopQuery, ShopResult } from "@/types/product";
 
 /*
  * Product data-access layer. Today it serves the sample catalog in
- * src/data/products.ts; when Strapi is connected, replace `loadCatalog`
- * with an `apiFetch` call and map the response to `Product` — callers
+ * src/data/products.ts plus the client's Diwali range in
+ * src/data/diwali-products.ts; when the backend is connected, replace the
+ * loaders with `apiFetch` calls and map the response to `Product` — callers
  * don't change.
  */
 
+/** Maps a Diwali record (shaped like the future API response) onto the shop's `Product`. */
+function fromDiwaliRecord(record: DiwaliProductRecord): Product {
+  const images: ProductImage[] = record.images.map((src, i) => ({
+    src,
+    alt: record.images.length > 1 ? `${record.name} — photo ${i + 1}` : record.name,
+  }));
+  const [image] = images;
+  if (!image) throw new Error(`Diwali product "${record.slug}" has no images`);
+  return {
+    id: record.id,
+    slug: record.slug,
+    name: record.name,
+    description: record.description,
+    category: "diwali-collection",
+    collections: ["gifting"],
+    occasions: ["festivals"],
+    image,
+    ...(images.length > 1 ? { images } : {}),
+  };
+}
+
 async function loadCatalog(): Promise<readonly Product[]> {
-  return sampleCatalog;
+  const diwali = (await getLocalDiwaliProducts()).map(fromDiwaliRecord);
+  return [...sampleCatalog, ...diwali];
 }
 
 export async function getAllProducts(): Promise<readonly Product[]> {

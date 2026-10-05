@@ -214,18 +214,6 @@ const drafts: readonly Draft[] = [
     addedAt: "2026-02-19",
   },
   {
-    slug: "diwali-gift-box",
-    name: "Diwali Gift Box",
-    category: "diwali-collection",
-    collections: ["gifting", "celebrations"],
-    occasions: ["festivals"],
-    description: "A festive pink-and-gold box for sweets, chocolates and Diwali gifting.",
-    price: 250,
-    isNew: true,
-    inStock: true,
-    addedAt: "2026-09-10",
-  },
-  {
     slug: "gold-lustre-dust",
     name: "Gold Edible Lustre Dust",
     category: "colours-essences",

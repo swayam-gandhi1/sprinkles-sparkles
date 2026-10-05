@@ -54,7 +54,8 @@ src/styles/theme.css      design tokens
 - All homepage photos go through ONE manifest: `src/data/images.ts`. Policy (client's
   choice): REAL shop photos only — no stock or AI imagery. They come from the shop's
   Instagram (@sprinkle_and_sparkle__) as high-quality WebP in `public/images/client/`.
-  Sections without a real photo (need cards, Diwali feature, inspiration) are
+  The Diwali feature uses the client's photos from `public/Diwali Products/` (`diwaliFeatureImages`).
+  Sections without a real photo (need cards, inspiration) are
   designed to work without one; add photos there only when the client supplies them.
 - Don't invent claims (reviews, stats, awards, prices, delivery promises).
 

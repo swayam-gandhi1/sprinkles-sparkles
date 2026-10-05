@@ -11,7 +11,7 @@ const twMerge = extendTailwindMerge({
       radius: ["button", "card", "panel"],
       shadow: ["card", "card-hover", "header", "pink", "teal"],
       ease: ["premium"],
-      animate: ["rise", "float", "settle"],
+      animate: ["rise", "float", "settle", "marquee"],
       font: ["sans", "display", "serif", "script"],
     },
   },

@@ -8,9 +8,13 @@ type ProductPriceProps = {
   className?: string;
 };
 
-/** Selling price, "From" prefix for made-to-order items, and a struck-through original price. */
+/**
+ * Selling price, "From" prefix for made-to-order items, and a struck-through original price.
+ * Renders nothing when the product has no confirmed price.
+ */
 export function ProductPrice({ product, size = "md", className }: ProductPriceProps) {
   const { price, compareAtPrice, priceFrom } = product;
+  if (price === undefined) return null;
   const onSale = compareAtPrice !== undefined && compareAtPrice > price;
 
   return (
@@ -34,6 +38,6 @@ export function ProductPrice({ product, size = "md", className }: ProductPricePr
 /** Rounded percentage saved, or null when not on sale. */
 export function discountPercent(product: Pick<Product, "price" | "compareAtPrice">) {
   const { price, compareAtPrice } = product;
-  if (compareAtPrice === undefined || compareAtPrice <= price) return null;
+  if (price === undefined || compareAtPrice === undefined || compareAtPrice <= price) return null;
   return Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
 }
