@@ -40,8 +40,7 @@ export const diwaliFeatureImages = {
   ),
   roses: diwali("WhatsApp-Image-2026-09-18-at-20.43.26-2.jpeg", "Rose candles and festive treats in a compartment gift box"),
   treats: diwali("WhatsApp-Image-2026-09-20-at-19.21.58-2.jpeg", "Cookies, brownies and chocolates in a nine-compartment treat box"),
-  // Lightweight JPEG copy of the red scallop box photo (the PNG original is ~2 MB).
-  scallop: diwali("WhatsApp Image 2026-10-03 at 7.03.10 AM (1).jpeg", "Red scallop-edged box with a clear lid"),
+  scallop: diwali("optimized/5da7e162-bf9f-41e8-9c3b-7bd08f75632d-1.webp", "Red scallop-edged box with a clear lid"),
 } satisfies Record<string, ImageAsset>;
 
 /** Instagram gallery — the shop's own posts. */

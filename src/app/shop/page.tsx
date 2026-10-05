@@ -76,7 +76,7 @@ export default async function ShopPage({ searchParams }: PageProps<"/shop">) {
                     "No products match these filters"
                   )}
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex max-w-full min-w-0 items-center gap-2">
                   <MobileFilters query={query} facets={result.facets} total={result.total} />
                   <SortSelect query={query} />
                 </div>

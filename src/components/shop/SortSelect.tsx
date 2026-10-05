@@ -13,17 +13,18 @@ export function SortSelect({ query }: { query: ShopQuery }) {
   const id = useId();
 
   return (
-    <div className="flex items-center gap-2">
+    // min-w-0 lets the select shrink on 320px screens instead of overflowing.
+    <div className="flex min-w-0 items-center gap-2">
       <label htmlFor={id} className="hidden text-sm font-medium whitespace-nowrap text-muted-foreground sm:block">
         Sort by
       </label>
-      <div className="relative">
+      <div className="relative min-w-0">
         <select
           id={id}
           value={query.sort}
           onChange={(event) => navigate(shopHref({ ...query, sort: event.target.value as SortKey, page: 1 }))}
           aria-label="Sort products"
-          className="h-11 appearance-none rounded-button border-2 border-border bg-white pr-10 pl-4 text-sm font-semibold text-foreground transition-colors hover:border-blush-strong focus-visible:border-pink"
+          className="h-11 w-full max-w-full appearance-none rounded-button border-2 border-border bg-white pr-10 pl-4 text-sm font-semibold text-foreground transition-colors hover:border-blush-strong focus-visible:border-pink"
         >
           {sortOptions.map((option) => (
             <option key={option.value} value={option.value}>

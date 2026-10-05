@@ -12,6 +12,10 @@
  *   the same shot re-saved under a second name); each photo is listed once.
  * - Colour variants of a box are separate products; different shots of the same
  *   item share one product's `images` gallery.
+ * - The five box photos supplied as ~2 MB opaque PNGs are served from
+ *   `optimized/` as full-resolution WebP masters (q90, visually lossless);
+ *   next/image then delivers responsive AVIF/WebP. The PNG originals stay in
+ *   the folder as source assets.
  */
 
 export type DiwaliProductRecord = {
@@ -156,35 +160,35 @@ export const diwaliProducts: readonly DiwaliProductRecord[] = [
     name: "Pink Sliding Window Box",
     description:
       "A pink sleeve box with a clear top window and slide-out tray, ideal for presenting sweets and treats.",
-    images: [photo("39c120fa-b638-48bc-97ee-016d64d6ba96.png")],
+    images: [photo("optimized/39c120fa-b638-48bc-97ee-016d64d6ba96.webp")],
   },
   {
     id: "diwali-016",
     slug: "scallop-clear-lid-box-red",
     name: "Scallop Clear Lid Box — Red",
     description: "A red scallop-edged box with a clear lid that lets festive sweets and treats shine through.",
-    images: [photo("5da7e162-bf9f-41e8-9c3b-7bd08f75632d-1.png")],
+    images: [photo("optimized/5da7e162-bf9f-41e8-9c3b-7bd08f75632d-1.webp")],
   },
   {
     id: "diwali-017",
     slug: "scallop-clear-lid-box-pink",
     name: "Scallop Clear Lid Box — Pink",
     description: "A blush pink scallop-edged box with a clear lid for elegant Diwali gifting.",
-    images: [photo("de5f4de4-78d5-4a36-93c1-a56ff39fb1ac-1.png")],
+    images: [photo("optimized/de5f4de4-78d5-4a36-93c1-a56ff39fb1ac-1.webp")],
   },
   {
     id: "diwali-018",
     slug: "scallop-clear-lid-box-blue",
     name: "Scallop Clear Lid Box — Blue",
     description: "A soft blue scallop-edged box with a clear lid for sweets, candles and small gifts.",
-    images: [photo("b773a235-9e22-489e-8ecc-1b845be7084d.png")],
+    images: [photo("optimized/b773a235-9e22-489e-8ecc-1b845be7084d.webp")],
   },
   {
     id: "diwali-019",
     slug: "scallop-clear-lid-box-mint",
     name: "Scallop Clear Lid Box — Mint",
     description: "A pastel mint scallop-edged box with a clear lid — a fresh take on festive packaging.",
-    images: [photo("98eec84d-4493-456e-befe-fcde4d3ea599.png")],
+    images: [photo("optimized/98eec84d-4493-456e-befe-fcde4d3ea599.webp")],
   },
   {
     id: "diwali-020",
