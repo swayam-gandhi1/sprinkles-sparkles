@@ -8,6 +8,7 @@ import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
 import { removeFromCart, setQuantity, useCartReady, useCartState } from "@/lib/cart/store";
 import { routes } from "@/lib/config/routes";
 import { siteConfig } from "@/lib/config/site";
+import { unitPriceFor } from "@/lib/products/pricing";
 import { formatPrice } from "@/lib/products/query";
 import type { Product } from "@/types/product";
 import { ProductCardSkeleton } from "./ProductCardSkeleton";
@@ -22,10 +23,12 @@ export function CartView({ products }: { products: readonly Product[] }) {
   const { cart } = useCartState();
   const lines = cart
     .map((line) => ({ ...line, product: products.find((p) => p.slug === line.slug) }))
-    .filter((line): line is typeof line & { product: Product } => Boolean(line.product));
+    .filter((line): line is typeof line & { product: Product } => Boolean(line.product))
+    // Pack-priced items bill at the per-piece rate their quantity earns, not a flat price.
+    .map((line) => ({ ...line, unitPrice: unitPriceFor(line.product, line.qty) }));
   // Items without a confirmed price make the total unknowable — it's then confirmed on WhatsApp.
-  const subtotal = lines.every((line) => line.product.price !== undefined)
-    ? lines.reduce((sum, line) => sum + (line.product.price ?? 0) * line.qty, 0)
+  const subtotal = lines.every((line) => line.unitPrice !== undefined)
+    ? lines.reduce((sum, line) => sum + (line.unitPrice ?? 0) * line.qty, 0)
     : null;
 
   if (!ready) {
@@ -76,7 +79,7 @@ export function CartView({ products }: { products: readonly Product[] }) {
           {itemCount} {itemCount === 1 ? "item" : "items"} in your cart
         </p>
         <ul className="divide-y divide-border rounded-card border border-border bg-white shadow-card">
-          {lines.map(({ product, qty }) => (
+          {lines.map(({ product, qty, unitPrice }) => (
             <li
               key={product.slug}
               className="grid grid-cols-[5rem_minmax(0,1fr)] items-center gap-x-3 gap-y-3 p-4 sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:gap-x-4 sm:p-5 lg:grid-cols-[6rem_minmax(0,1fr)] xl:grid-cols-[6rem_minmax(0,1fr)_auto]"
@@ -95,7 +98,7 @@ export function CartView({ products }: { products: readonly Product[] }) {
                   {product.name}
                 </Link>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {product.price !== undefined ? `${formatPrice(product.price)} each` : "Price on request"}
+                  {unitPrice !== undefined ? `${formatPrice(unitPrice)} each` : "Price on request"}
                 </p>
               </div>
               <div className="col-span-2 flex items-center justify-between gap-3 sm:col-span-1 sm:justify-end sm:gap-4 lg:col-start-2 lg:self-start lg:justify-between xl:col-start-auto xl:self-center xl:justify-end">
@@ -123,7 +126,7 @@ export function CartView({ products }: { products: readonly Product[] }) {
                 </div>
                 <div className="flex items-center gap-2 sm:gap-4">
                   <p className="min-w-16 text-right font-bold tabular-nums">
-                    {product.price !== undefined ? formatPrice(product.price * qty) : "—"}
+                    {unitPrice !== undefined ? formatPrice(unitPrice * qty) : "—"}
                   </p>
                   <button
                     type="button"

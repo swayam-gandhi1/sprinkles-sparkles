@@ -9,6 +9,7 @@ import type { ShopQuery } from "@/types/product";
  */
 const categoryFilters: Record<string, Partial<ShopQuery>> = {
   "baking-tins": { categories: ["baking-tins"] },
+  "bento-boxes": { categories: ["bento-boxes"] },
   boxes: { categories: ["boxes"] },
   "chocolate-boxes": { categories: ["boxes"] },
   sprinkles: { categories: ["sprinkles"] },

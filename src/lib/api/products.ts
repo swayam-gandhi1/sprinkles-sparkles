@@ -1,3 +1,4 @@
+import { type BentoProductRecord, getLocalBentoProducts } from "@/data/bento-products";
 import { type DiwaliProductRecord, getLocalDiwaliProducts } from "@/data/diwali-products";
 import { products as sampleCatalog } from "@/data/products";
 import { queryProducts } from "@/lib/products/query";
@@ -32,9 +33,50 @@ function fromDiwaliRecord(record: DiwaliProductRecord): Product {
   };
 }
 
+/**
+ * Maps a Bento Boxes record onto the shop `Product`. Pack-priced items expose
+ * the cheapest per-piece rate as `price` with `priceFrom`, so cards, sorting and
+ * the price filter all read "From ₹x/pc" from the same number the tiers quote.
+ */
+function fromBentoRecord(record: BentoProductRecord): Product {
+  const images: ProductImage[] = record.images.map((src, i) => ({
+    src,
+    alt: record.alts[i] ?? record.name,
+  }));
+  const [image] = images;
+  if (!image) throw new Error(`Bento product "${record.slug}" has no images`);
+
+  const tiers = record.packTiers;
+  const price = tiers?.length ? Math.min(...tiers.map((t) => t.unitPrice)) : record.unitPrice;
+
+  return {
+    id: record.id,
+    slug: record.slug,
+    name: record.name,
+    description: record.description,
+    category: "bento-boxes",
+    collections: ["packaging"],
+    occasions: ["birthdays", "special-occasions"],
+    image,
+    sku: record.sku,
+    priceUnit: "pc",
+    ...(images.length > 1 ? { images } : {}),
+    ...(price !== undefined ? { price } : {}),
+    // Several packs to choose from ⇒ the headline price is a starting point.
+    ...(tiers && tiers.length > 1 ? { priceFrom: true } : {}),
+    ...(tiers?.length ? { packTiers: tiers } : {}),
+    ...(record.pricePending ? { pricePending: true } : {}),
+    ...(record.dimensions ? { dimensions: record.dimensions } : {}),
+    ...(record.isNew ? { isNew: true } : {}),
+    ...(record.inStock !== undefined ? { inStock: record.inStock } : {}),
+    ...(record.addedAt ? { addedAt: record.addedAt } : {}),
+  };
+}
+
 async function loadCatalog(): Promise<readonly Product[]> {
   const diwali = (await getLocalDiwaliProducts()).map(fromDiwaliRecord);
-  return [...sampleCatalog, ...diwali];
+  const bento = (await getLocalBentoProducts()).map(fromBentoRecord);
+  return [...sampleCatalog, ...bento, ...diwali];
 }
 
 export async function getAllProducts(): Promise<readonly Product[]> {

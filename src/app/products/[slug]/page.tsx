@@ -8,6 +8,7 @@ import { SectionHeading } from "@/components/common/SectionHeading";
 import { tones } from "@/components/common/tones";
 import { Container } from "@/components/layout/Container";
 import { AddToCartButton } from "@/components/products/AddToCartButton";
+import { PackPicker } from "@/components/products/PackPicker";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductGallery } from "@/components/products/ProductGallery";
 import { discountPercent, ProductPrice } from "@/components/products/ProductPrice";
@@ -17,6 +18,7 @@ import { getAllProducts, getProduct, getRelatedProducts } from "@/lib/api/produc
 import { routes } from "@/lib/config/routes";
 import { siteConfig } from "@/lib/config/site";
 import { shopHref } from "@/lib/products/query";
+import { orderedTiers, packTierLabel } from "@/lib/products/pricing";
 import { cn } from "@/lib/utils/cn";
 
 export async function generateStaticParams() {
@@ -37,6 +39,12 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
   const tone = tones[category?.tone ?? "blush"];
   const related = await getRelatedProducts(product);
   const discount = discountPercent(product);
+  const packTiers = orderedTiers(product);
+  // Name the row after the category when every suggestion comes from it.
+  const relatedTitle =
+    category && related.length && related.every((p) => p.category === product.category)
+      ? `More ${category.name}`
+      : "You May Also Like";
   const enquiry = `${siteConfig.contact.whatsappHref}?text=${encodeURIComponent(
     `Hi Sprinkle & Sparkle! I'd like to know more about: ${product.name}`,
   )}`;
@@ -94,11 +102,20 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             ) : null}
             <p className="mt-5 max-w-[52ch] text-base leading-relaxed text-muted-foreground">{product.description}</p>
 
-            <div className="mt-8 flex items-center gap-3">
-              <div className="flex-1 sm:max-w-xs">
-                <AddToCartButton slug={product.slug} name={product.name} inStock={product.inStock !== false} size="lg" />
+            {packTiers.length ? (
+              <div className="mt-8 rounded-panel border border-border bg-cream/60 p-4 sm:p-5">
+                <PackPicker product={product} />
               </div>
+            ) : null}
+
+            <div className="mt-6 flex items-center gap-3">
+              {packTiers.length ? null : (
+                <div className="flex-1 sm:max-w-xs">
+                  <AddToCartButton slug={product.slug} name={product.name} inStock={product.inStock !== false} size="lg" />
+                </div>
+              )}
               <WishlistButton slug={product.slug} name={product.name} className="size-12 border border-border" />
+              {packTiers.length ? <span className="text-sm text-muted-foreground">Save to your wishlist</span> : null}
             </div>
             <a
               href={enquiry}
@@ -109,6 +126,34 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
               <WhatsAppIcon aria-hidden className="size-4 text-whatsapp" />
               Ask about this product on WhatsApp
             </a>
+
+            {product.dimensions || product.sku ? (
+              <div className="mt-8 rounded-card border border-border bg-white p-4 sm:p-5">
+                <h2 className="text-sm font-bold">Product information</h2>
+                <dl className="mt-3 grid gap-2 text-sm">
+                  {product.dimensions ? (
+                    <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-x-3 gap-y-1">
+                      <dt className="text-muted-foreground">Dimensions</dt>
+                      <dd className="font-medium">{product.dimensions}</dd>
+                    </div>
+                  ) : null}
+                  {packTiers.length ? (
+                    <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-x-3 gap-y-1">
+                      <dt className="text-muted-foreground">Sold in</dt>
+                      <dd className="font-medium tabular-nums">
+                        {packTiers.map((t) => packTierLabel(t, product.priceUnit)).join(" · ")}
+                      </dd>
+                    </div>
+                  ) : null}
+                  {product.sku ? (
+                    <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-x-3 gap-y-1">
+                      <dt className="text-muted-foreground">SKU</dt>
+                      <dd className="font-medium">{product.sku}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+              </div>
+            ) : null}
 
             <p className="mt-8 flex items-center gap-3 rounded-card bg-aqua-mist px-4 py-3 text-sm text-foreground/85">
               <Truck aria-hidden className="size-5 shrink-0 text-accent-strong" />
@@ -121,7 +166,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
       {related.length ? (
         <section aria-labelledby="related-title" className="bg-cream py-section-sm">
           <Container>
-            <SectionHeading id="related-title" title="You May Also Like" />
+            <SectionHeading id="related-title" title={relatedTitle} />
             <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
               {related.map((item) => (
                 <li key={item.id}>

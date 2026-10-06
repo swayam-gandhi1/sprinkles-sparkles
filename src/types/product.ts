@@ -11,6 +11,23 @@ export type ProductImage = ImageAsset & {
   placeholder?: boolean;
 };
 
+/**
+ * One pack size the shop sells an item in, with the price **per piece** at that
+ * quantity. `packPrice` is set only when the shop quotes a pack total of its own
+ * (otherwise the total is `qty × unitPrice`); `compareAtPackPrice` is the
+ * struck-through pack total when that pack is on offer.
+ */
+export type PackTier = {
+  /** Pieces in the pack. */
+  qty: number;
+  /** Price per piece in INR at this pack size. */
+  unitPrice: number;
+  /** Pack total quoted by the shop, when it differs from `qty × unitPrice`. */
+  packPrice?: number;
+  /** Original pack total, shown struck through. */
+  compareAtPackPrice?: number;
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -38,6 +55,20 @@ export type Product = {
   image: ProductImage;
   /** Full gallery starting with `image`, when there is more than one photo. */
   images?: readonly ProductImage[];
+  /**
+   * Pack sizes with per-piece pricing, smallest pack first. When present,
+   * `price` is the lowest per-piece price and `priceFrom` is set, so every
+   * surface reads "From ₹x/pc".
+   */
+  packTiers?: readonly PackTier[];
+  /** Unit the price is quoted in, e.g. "pc" — rendered as "₹20/pc". */
+  priceUnit?: string;
+  /** Stated dimensions, shown in the product information panel. */
+  dimensions?: string;
+  /** Stock-keeping unit. Shown on the product page, never in listings. */
+  sku?: string;
+  /** Price isn't confirmed by the client yet — the UI invites an enquiry instead. */
+  pricePending?: boolean;
 };
 
 export type ShopCategory = {

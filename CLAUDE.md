@@ -73,6 +73,17 @@ src/styles/theme.css      design tokens
   AI-generated placeholders in `public/images/products/placeholder/`, flagged with
   `placeholder: true` in the data. Real photos always take priority; the homepage stays
   real-photos-only.
+- **Bento Boxes** (`src/data/bento-products.ts`) is the client's real range, built only from
+  `public/Bento boxes` + the supplied price sheet. It is sold BY THE PACK, PRICED PER PIECE, so
+  Photos are served from `public/Bento boxes/optimized/` as full-resolution WebP masters
+  (q85, visually lossless, 59% smaller than the JPEGs); `photo()` maps a source filename to
+  its WebP and escapes the `@` in one name, which the static server and image optimizer reject.
+  The JPEG originals stay in the folder as untouched source assets.
+  products carry `packTiers` ({ qty, unitPrice }) instead of one flat price; `price` is the
+  cheapest per-piece rate with `priceFrom`, so cards/sorting/price bands all read "From ₹x/pc".
+  Pack logic lives in `src/lib/products/pricing.ts` — never print a bare "₹18" anywhere.
+  Items awaiting a client price use `pricePending`; `REVIEW:` comments in the data flag the
+  open questions (see the handover notes).
 - Cart + wishlist are browser-only (`src/lib/cart/store.ts`, localStorage). No checkout yet;
   the cart sends orders via a pre-filled WhatsApp message.
 

@@ -1,4 +1,5 @@
 import {
+  Box,
   CakeSlice,
   Candy,
   Flame,
@@ -18,6 +19,7 @@ import type { Category } from "@/types/content";
 export const categories: readonly Category[] = [
   { slug: "baking-tins", name: "Baking Tins", tone: "aqua", icon: CakeSlice, image: { src: null, alt: "Baking tins" } },
   { slug: "boxes", name: "Boxes", tone: "blush", icon: Package, image: { src: null, alt: "Cake and gift boxes" } },
+  { slug: "bento-boxes", name: "Bento Boxes", tone: "aqua", icon: Box, image: { src: null, alt: "Bento cake boxes" } },
   { slug: "diwali-collection", name: "Diwali Collection", tone: "sunny", icon: Flame, image: { src: null, alt: "Diwali collection" } },
   { slug: "knife-cutters", name: "Knife Cutters", tone: "lavender", icon: Scissors, image: { src: null, alt: "Knife cutters" } },
   { slug: "sprinkles", name: "Sprinkles", tone: "blush", icon: Sparkles, image: { src: null, alt: "Sprinkles" } },

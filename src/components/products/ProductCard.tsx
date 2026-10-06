@@ -6,6 +6,7 @@ import { routes } from "@/lib/config/routes";
 import { cn } from "@/lib/utils/cn";
 import type { Product } from "@/types/product";
 import { AddToCartButton } from "./AddToCartButton";
+import { PackTierList } from "./PackTierList";
 import { discountPercent, ProductPrice } from "./ProductPrice";
 import { WishlistButton } from "./WishlistButton";
 
@@ -71,6 +72,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
           </Link>
         </h3>
         <ProductPrice product={product} className="mt-2" />
+        <PackTierList product={product} className="mt-2" />
         <div className="relative z-10 mt-auto pt-3">
           <AddToCartButton
             slug={product.slug}

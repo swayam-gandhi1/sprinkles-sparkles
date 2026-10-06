@@ -7,6 +7,7 @@ export const mainNav: readonly NavItem[] = [
   { label: "Shop", href: routes.shop },
   { label: "Baking Tins", href: routes.category("baking-tins") },
   { label: "Boxes", href: routes.category("boxes") },
+  { label: "Bento Boxes", href: routes.category("bento-boxes") },
   { label: "Diwali Collection", href: routes.category("diwali-collection") },
   { label: "Birthday Collection", href: routes.category("birthday-collection") },
   { label: "Tools & Equipment", href: routes.category("tools-equipment") },

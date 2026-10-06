@@ -1,4 +1,5 @@
 import {
+  Box,
   CakeSlice,
   Candy,
   Flame,
@@ -26,6 +27,7 @@ export const shopCategories: readonly ShopCategory[] = [
   { slug: "decorations", name: "Decorations", icon: Flower2, tone: "blush" },
   { slug: "chocolates", name: "Chocolates", icon: Candy, tone: "cream" },
   { slug: "tools-equipment", name: "Tools & Equipment", icon: UtensilsCrossed, tone: "aqua" },
+  { slug: "bento-boxes", name: "Bento Boxes", icon: Box, tone: "aqua" },
   { slug: "boxes", name: "Boxes & Packaging", icon: Package, tone: "blush" },
   { slug: "gifting", name: "Gifts & Hampers", icon: Gift, tone: "sunny" },
   { slug: "diwali-collection", name: "Diwali Collection", icon: Flame, tone: "sunny" },
@@ -81,6 +83,7 @@ export const shopShortcuts: readonly {
   { label: "Baking Essentials", params: { collection: "baking-ingredients" }, icon: Wheat, tone: "sunny" },
   { label: "Decoration Supplies", params: { collection: "decorate" }, icon: WandSparkles, tone: "blush" },
   { label: "Packaging & Gifting", params: { category: "boxes,gifting" }, icon: Gift, tone: "lavender" },
+  { label: "Bento Boxes", params: { category: "bento-boxes" }, icon: Box, tone: "aqua" },
   { label: "Toppers & Accessories", params: { category: "toppers" }, icon: Star, tone: "cream" },
   { label: "Colours & Essences", params: { category: "colours-essences" }, icon: Palette, tone: "lavender" },
   { label: "Sprinkles", params: { category: "sprinkles" }, icon: Sparkles, tone: "blush" },

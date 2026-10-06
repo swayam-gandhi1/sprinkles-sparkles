@@ -19,7 +19,7 @@ export function CategoryShortcuts({ query }: { query: ShopQuery }) {
   return (
     <Container className="relative z-10 -mt-14 sm:-mt-16">
       <nav aria-label="Shop by category" className="rounded-panel border border-white bg-white p-2 shadow-card-hover sm:p-3">
-        <ul className="-mx-2 flex snap-x gap-1 overflow-x-auto px-2 [scrollbar-width:none] sm:-mx-3 sm:px-3 lg:mx-0 lg:grid lg:grid-cols-8 lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden">
+        <ul className="-mx-2 flex snap-x gap-1 overflow-x-auto px-2 [scrollbar-width:none] sm:-mx-3 sm:px-3 lg:mx-0 lg:grid lg:grid-cols-9 lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden">
           {shopShortcuts.map(({ label, params, icon: Icon, tone }) => {
             const current = isCurrent(params, query);
             return (

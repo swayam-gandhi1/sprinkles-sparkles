@@ -164,5 +164,7 @@ export function queryProducts(products: readonly Product[], q: ShopQuery): ShopR
 }
 
 const inr = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+const inrPaise = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2 });
 
-export const formatPrice = (value: number) => inr.format(value);
+/** Whole rupees, or exact paise when the price has them (e.g. a ₹18.70 per-piece rate). */
+export const formatPrice = (value: number) => (Number.isInteger(value) ? inr : inrPaise).format(value);
